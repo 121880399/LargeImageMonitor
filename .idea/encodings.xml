@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding" native2AsciiForPropertiesFiles="true" defaultCharsetForPropertiesFiles="UTF-8">
+    <file url="file://$PROJECT_DIR$" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/buildSrc/src" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/buildSrc/src/main/groovy/org/zzy/largeimage/adapter/LargeImageClassAdapter.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/buildSrc/src/main/groovy/org/zzy/largeimage/adapter/OkHttpClassAdapter.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/buildSrc/src/main/groovy/org/zzy/largeimage/method/OkHttpMethodAdapter.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/buildSrc/src/main/groovy/org/zzy/largeimage/transform/OkHttpTransform.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/buildSrc/src/main/groovy/org/zzy/largeimage/weaver/OkHttpWeaver.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/largeimage/src/main/java/org/zzy/lib/largeimage/LargeImage.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/largeimage/src/main/java/org/zzy/lib/largeimage/LargeImageInfo.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/largeimage/src/main/java/org/zzy/lib/largeimage/LargeImageManager.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/largeimage/src/main/java/org/zzy/lib/largeimage/aop/fresco/FrescoLargeImageProcessor.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/largeimage/src/main/java/org/zzy/lib/largeimage/aop/okhttp/LargeImageInterceptor.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/largeimage/src/main/java/org/zzy/lib/largeimage/util/ConvertUtils.java" charset="UTF-8" />
+    <file url="PROJECT" charset="UTF-8" />
+  </component>
+</project>

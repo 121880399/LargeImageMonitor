@@ -1,0 +1,24 @@
+ext {
+    android = [
+               applicationId             : "com.didichuxing.doraemondemo",
+               compileSdkVersion         : 29,
+               minSdkVersion             : 16,
+               targetSdkVersion          : 29,
+               versionCode               : 1,
+               versionName               : "1.0.0",
+               //插件版本号
+               pluginVersionName         : "1.0.0-SNAPSHOT",
+               //jcenter
+               jcenterArchivesVersionName: "1.0.0",
+    ]
+    dependencies = [
+                    "okhttp"                  : "com.squareup.okhttp3:okhttp:3.12.1",
+                    //将urlconnection代理到okhttp
+                    //"okhttp_urlconnection"    : "com.squareup.okhttp3:okhttp-urlconnection:3.12.1",
+                    //"okio"                    : "com.squareup.okio:okio:1.15.0",
+                    "glide"                   : 'com.github.bumptech.glide:glide:4.11.0',
+                    "picasso"                 : 'com.squareup.picasso:picasso:2.71828',
+                    "fresco"                  : 'com.facebook.fresco:fresco:2.1.0',
+                    "image-loader"            : 'com.nostra13.universalimageloader:universal-image-loader:1.9.5',
+    ]
+}
