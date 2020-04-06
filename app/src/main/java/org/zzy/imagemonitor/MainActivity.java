@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
     private void setGlide(){
         //1.测试文件和内存大小未超过的图片，预期结果：不弹出提示 测试结果：通过
 //        Glide.with(this).load("https://c-ssl.duitang.com/uploads/item/202004/03/20200403204618_d2Ucc.thumb.300_300_c.jpeg").into(mIVGlide);
-        Glide.with(this).load("https://c-ssl.duitang.com/uploads/item/202004/03/20200403204618_d2Ucc.thumb.300_300_c.jpeg").into(mIVGlide);
+        Glide.with(this).load("http://desk.fd.zol-img.com.cn/t_s1680x1050/g5/M00/09/03/ChMkJ13I0O-IUxnqAA6O1fF1dWwAAvKJgAYVvEADo7t268.jpg").into(mIVGlide);
         //2.测试内存大小超过的图片
         //3.测试文件大小超过的图片
         //4.测试本地图片
