@@ -1,6 +1,7 @@
 package org.zzy.lib.largeimage;
 
 import android.app.Application;
+import android.util.Log;
 
 import org.zzy.lib.largeimage.aop.okhttp.LargeImageInterceptor;
 
@@ -19,6 +20,7 @@ import okhttp3.Interceptor;
  * ================================================
  */
 public class LargeImage {
+    public static String TAG = "LargeImageMonitor";
 
     public static Application APPLICATION;
 

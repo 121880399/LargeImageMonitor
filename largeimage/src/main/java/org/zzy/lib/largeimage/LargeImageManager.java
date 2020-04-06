@@ -1,14 +1,19 @@
 package org.zzy.lib.largeimage;
 
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
@@ -16,6 +21,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
 
 import org.zzy.lib.largeimage.util.ConvertUtils;
 import org.zzy.lib.largeimage.util.ResHelper;
@@ -45,6 +52,11 @@ public class LargeImageManager {
      * 主线程Handler
      */
     Handler mMainHandler = new Handler(Looper.getMainLooper());
+
+    /**
+     * 是否弹出警告
+     */
+    private boolean mAlarming = false;
 
     private LargeImageManager(){}
 
@@ -105,7 +117,7 @@ public class LargeImageManager {
         }
         if(LargeImage.getInstance().isLargeImageOpen()){
             final double size = ConvertUtils.byte2MemorySize(memorySize,ConvertUtils.KB);
-            //超过阈值
+            //超过阈值,进行存储
             if(size >= LargeImage.getInstance().getMemorySizeThreshold()){
                 final LargeImageInfo largeImageInfo;
                 if(mLargeImageInfo.containsKey(url)){
@@ -119,14 +131,32 @@ public class LargeImageManager {
                 largeImageInfo.setHeight(height);
                 largeImageInfo.setMemorySize(size);
                 largeImageInfo.setFramework(framework);
-                //在主线程显示弹框
-                mMainHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        showDialog(url,width,height,largeImageInfo.getFileSize(),size);
-                    }
-                });
             }
+            isShwoAlarm(url);
+        }
+    }
+
+    /**
+    * 最后判断文件大小或者内存大小是否有超值
+    * 有的话弹出提示框。
+    * 作者: ZhouZhengyi
+    * 创建时间: 2020/4/6 17:22
+    */
+    private void isShwoAlarm(String url){
+        final LargeImageInfo largeImageInfo = mLargeImageInfo.get(url);
+        //如果文件大小和内存大小都没有超值，是不会有记录的，所以直接返回
+        if(null == largeImageInfo){
+            return;
+        }
+        if(largeImageInfo.getFileSize() >= LargeImage.getInstance().getFileSizeThreshold() ||
+         largeImageInfo.getMemorySize() >= LargeImage.getInstance().getMemorySizeThreshold()) {
+            //在主线程显示弹框
+            mMainHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    showDialog(largeImageInfo.getUrl(), largeImageInfo.getWidth(), largeImageInfo.getHeight(), largeImageInfo.getFileSize(), largeImageInfo.getMemorySize());
+                }
+            });
         }
     }
 
@@ -155,6 +185,17 @@ public class LargeImageManager {
         return sourceBitmap;
     }
 
+    //请求悬浮窗权限
+    @TargetApi(Build.VERSION_CODES.M)
+    private void getOverlayPermission() {
+        Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+        intent.setData(Uri.parse("package:" +  LargeImage.APPLICATION.getPackageName()));
+        //非Activity启动，记得加上这个属性
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        LargeImage.APPLICATION.getApplicationContext().startActivity(intent);
+    }
+
+
     /**
     * 显示警告弹窗
      * fileSize,memorySize 传进来时都是KB
@@ -162,6 +203,14 @@ public class LargeImageManager {
     * 创建时间: 2020/4/4 22:05
     */
     public  void showDialog(final String url, int width, int height, double fileSize, double memorySize){
+        if(mAlarming){
+            return;
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if(!Settings.canDrawOverlays(LargeImage.APPLICATION)){
+                getOverlayPermission();
+            }
+        }
         final AlertDialog.Builder builder = new AlertDialog.Builder(LargeImage.APPLICATION);
         View dialogView = View.inflate(LargeImage.APPLICATION, R.layout.dialog_custom,null);
         LinearLayout llMemorySize = dialogView.findViewById(R.id.ll_memory_size);
@@ -172,6 +221,7 @@ public class LargeImageManager {
         ImageView ivFileSize = dialogView.findViewById(R.id.iv_file_size);
         TextView tvSize = dialogView.findViewById(R.id.tv_size);
         TextView tvImageUrl = dialogView.findViewById(R.id.tv_image_url);
+        ImageView ivThumb = dialogView.findViewById(R.id.iv_thumb);
         //设置文件大小
         if(fileSize <= 0){
             llFileSize.setVisibility(View.GONE);
@@ -182,7 +232,7 @@ public class LargeImageManager {
             }else{
                 ivFileSize.setVisibility(View.GONE);
             }
-           tvFileSize.setText(ResHelper.getString(R.string.large_image_file_size,String.valueOf(fileSize)));
+           tvFileSize.setText(ResHelper.getString(R.string.large_image_file_size,mDecimalFormat.format(fileSize)));
         }
         //设置内存大小
         if(memorySize <= 0){
@@ -229,16 +279,31 @@ public class LargeImageManager {
                 }
             });
         }
-
-        AlertDialog alertDialog = builder.setTitle("提示").setView(dialogView).setPositiveButton("关闭", null).setNegativeButton("不再提醒（直到下次重启）", new DialogInterface.OnClickListener() {
+        //设置图片
+        Glide.with(dialogView).load(url).thumbnail(0.1f).into(ivThumb);
+        AlertDialog alertDialog = builder.setTitle("提示").setView(dialogView).setPositiveButton("关闭", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                mAlarming = false;
+                dialog.dismiss();
+            }
+        }).setNegativeButton("不再提醒（直到下次重启）", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 LargeImage.getInstance().setLargeImageOpen(false);
+                mAlarming = false;
+                dialog.dismiss();
             }
         }).create();
         //设置全局Dialog
-        alertDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){//8.0
+            alertDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY);
+        }else{
+            alertDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_PHONE);
+        }
         alertDialog.show();
+        //标识正在显示警告
+        mAlarming = true;
     }
 
 

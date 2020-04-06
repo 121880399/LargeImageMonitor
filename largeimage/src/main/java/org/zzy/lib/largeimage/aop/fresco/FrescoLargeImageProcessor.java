@@ -1,11 +1,13 @@
 package org.zzy.lib.largeimage.aop.fresco;
 
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.net.Uri;
 
 import com.facebook.cache.common.CacheKey;
 import com.facebook.common.references.CloseableReference;
 import com.facebook.imagepipeline.bitmaps.PlatformBitmapFactory;
+import com.facebook.imagepipeline.nativecode.Bitmaps;
 import com.facebook.imagepipeline.request.Postprocessor;
 
 import org.zzy.lib.largeimage.LargeImageManager;
@@ -43,9 +45,27 @@ public class FrescoLargeImageProcessor implements Postprocessor {
                         sourceBitmap.getHeight(),
                         sourceBitmapConfig != null ? sourceBitmapConfig : FALLBACK_BITMAP_CONFIGURATION);
         try {
+            process(destBitmapRef.get(),sourceBitmap);
             return CloseableReference.cloneOrNull(destBitmapRef);
         }finally {
             CloseableReference.closeSafely(destBitmapRef);
+        }
+    }
+
+    public void process(Bitmap destBitmap, Bitmap sourceBitmap) {
+        internalCopyBitmap(destBitmap, sourceBitmap);
+        process(destBitmap);
+    }
+
+    public void process(Bitmap bitmap) {
+    }
+
+    private static void internalCopyBitmap(Bitmap destBitmap,Bitmap sourceBitmap){
+        if(destBitmap.getConfig() == sourceBitmap.getConfig()){
+            Bitmaps.copyBitmap(destBitmap, sourceBitmap);
+        }else{
+            Canvas canvas = new Canvas(destBitmap);
+            canvas.drawBitmap(sourceBitmap,0,0,null);
         }
     }
 

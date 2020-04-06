@@ -27,8 +27,9 @@ public class ImageLoaderLargeImageListener implements ImageLoadingListener {
     public ImageLoaderLargeImageListener(ImageLoadingListener listener){
         if(null == listener){
             mOriginListener = new SimpleImageLoadingListener();
+        }else {
+            mOriginListener = listener;
         }
-        mOriginListener = listener;
     }
 
     @Override

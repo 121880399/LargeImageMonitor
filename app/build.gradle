@@ -18,7 +18,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-
+}
+largeImageMonitor{
+    //开关测试成功
+    largeImagePluginSwitch = true
 }
 
 dependencies {

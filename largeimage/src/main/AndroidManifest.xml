@@ -1,2 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.zzy.lib.largeimage" />
+    package="org.zzy.lib.largeimage" >
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+
+</manifest>

@@ -9,7 +9,7 @@ package org.zzy.largeimage;
  * ================================================
  */
 public class Config {
-
+    public static String TAG = "LargeImageMonitor";
     /**
      * 大图检测插件的开关
      */

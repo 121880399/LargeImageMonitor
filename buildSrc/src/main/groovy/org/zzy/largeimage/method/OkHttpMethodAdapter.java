@@ -1,8 +1,11 @@
 package org.zzy.largeimage.method;
 
+import com.android.ddmlib.Log;
+
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.commons.AdviceAdapter;
+import org.zzy.largeimage.Config;
 
 /**
  * ================================================
@@ -26,16 +29,18 @@ public class OkHttpMethodAdapter extends AdviceAdapter {
         super(Opcodes.ASM5, mv, access, name, desc);
     }
 
+
     /**
-     * 方法进入时插入
-    * interceptors.addAll(LargeImage.getInstance().getOkHttpInterceptors());
+     * 方法退出时插入
+     * 这里不知道为什么在onMethodEnter方法插入会报空指针
+     * interceptors.addAll(LargeImage.getInstance().getOkHttpInterceptors());
      * networkInterceptors.addAll(LargeImage.getInstance().getOkHttpNetworkInterceptors());
-    * 作者: ZhouZhengyi
-    * 创建时间: 2020/4/5 9:39
-    */
+     * 作者: ZhouZhengyi
+     * 创建时间: 2020/4/5 9:39
+     */
     @Override
-    protected void onMethodEnter() {
-        super.onMethodEnter();
+    protected void onMethodExit(int opcode) {
+        super.onMethodExit(opcode);
         //添加应用拦截器
         mv.visitVarInsn(ALOAD, 0);
         mv.visitFieldInsn(GETFIELD, "okhttp3/OkHttpClient$Builder", "interceptors", "Ljava/util/List;");
@@ -50,11 +55,6 @@ public class OkHttpMethodAdapter extends AdviceAdapter {
         mv.visitMethodInsn(INVOKEVIRTUAL, "org/zzy/lib/largeimage/LargeImage", "getOkHttpNetworkInterceptors", "()Ljava/util/List;", false);
         mv.visitMethodInsn(INVOKEINTERFACE, "java/util/List", "addAll", "(Ljava/util/Collection;)Z", true);
         mv.visitInsn(POP);
-    }
-
-    @Override
-    protected void onMethodExit(int opcode) {
-        super.onMethodExit(opcode);
         //添加DNS
         mv.visitVarInsn(ALOAD, 0);
         mv.visitMethodInsn(INVOKESTATIC, "org/zzy/lib/largeimage/LargeImage", "getInstance", "()Lorg/zzy/lib/largeimage/LargeImage;", false);
