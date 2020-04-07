@@ -1,6 +1,11 @@
 package org.zzy.lib.largeimage;
 
+import android.annotation.TargetApi;
 import android.app.Application;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
+import android.provider.Settings;
 import android.util.Log;
 
 import org.zzy.lib.largeimage.aop.okhttp.LargeImageInterceptor;

@@ -15,7 +15,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -24,6 +23,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DecodeFormat;
+import com.bumptech.glide.request.RequestOptions;
+import com.squareup.picasso.Picasso;
 
 import org.zzy.lib.largeimage.util.ConvertUtils;
 import org.zzy.lib.largeimage.util.ResHelper;
@@ -56,9 +58,9 @@ public class LargeImageManager {
     Handler mMainHandler = new Handler(Looper.getMainLooper());
 
     /**
-     * 是否弹出警告
+     * 用来保存超标图片信息是否被显示
      */
-    private boolean mAlarming = false;
+    private Map<String,Boolean> mAlarmInfo = new HashMap<>();
 
     private LargeImageManager() {
     }
@@ -115,6 +117,14 @@ public class LargeImageManager {
     public void saveImageInfo(final String url, long memorySize, final int width, final int height, String framework) {
         if (memorySize <= 0) {
             return;
+        }
+        if(mLargeImageInfo.containsKey(url) && framework.equalsIgnoreCase("Glide")){
+            LargeImageInfo largeImageInfo = mLargeImageInfo.get(url);
+            if(largeImageInfo.getMemorySize()!=0.0){
+                //如果已经存在url，并且已经有内存大小，说明是Glide在加载弹框图片
+                //直接返回，不修改数据
+                return;
+            }
         }
         if (LargeImage.getInstance().isLargeImageOpen()) {
             final double size = ConvertUtils.byte2MemorySize(memorySize, ConvertUtils.KB);
@@ -210,7 +220,6 @@ public class LargeImageManager {
         LargeImage.APPLICATION.getApplicationContext().startActivity(intent);
     }
 
-
     /**
      * 显示警告弹窗
      * fileSize,memorySize 传进来时都是KB
@@ -218,12 +227,19 @@ public class LargeImageManager {
      * 创建时间: 2020/4/4 22:05
      */
     public void showDialog(final String url, int width, int height, double fileSize, double memorySize) {
-        if (mAlarming) {
+        //判断当前URL是否已经添加进去，如果已经添加进去，则不进行添加
+        if(!mAlarmInfo.containsKey(url)){
+            mAlarmInfo.put(url,false);
+        }
+        //如果为true说明该URL已经被弹出，则不再次弹出
+        if (mAlarmInfo.get(url)) {
             return;
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (!Settings.canDrawOverlays(LargeImage.APPLICATION)) {
                 getOverlayPermission();
+                //目前如果没有权限的话，只能返回，否则会报错，这样就可能导致有些警告窗不显示
+                return;
             }
         }
         final AlertDialog.Builder builder = new AlertDialog.Builder(LargeImage.APPLICATION);
@@ -295,18 +311,17 @@ public class LargeImageManager {
             });
         }
         //设置图片
-        Glide.with(dialogView).load(url).thumbnail(0.1f).into(ivThumb);
+        Glide.with(dialogView).load(url).into(ivThumb);
         AlertDialog alertDialog = builder.setTitle("提示").setView(dialogView).setPositiveButton("关闭", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                mAlarming = false;
+                mAlarmInfo.put(url,false);
                 dialog.dismiss();
             }
         }).setNegativeButton("不再提醒（直到下次重启）", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 LargeImage.getInstance().setLargeImageOpen(false);
-                mAlarming = false;
                 dialog.dismiss();
             }
         }).create();
@@ -318,7 +333,7 @@ public class LargeImageManager {
         }
         alertDialog.show();
         //标识正在显示警告
-        mAlarming = true;
+        mAlarmInfo.put(url,true);
     }
 
 
