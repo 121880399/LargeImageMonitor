@@ -1,5 +1,8 @@
 package org.zzy.lib.largeimage;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * ================================================
  * 作    者：ZhouZhengyi
@@ -8,7 +11,7 @@ package org.zzy.lib.largeimage;
  * 修订历史：
  * ================================================
  */
-public class LargeImageInfo {
+public class LargeImageInfo implements Parcelable {
 
     /**
      * 图片地址
@@ -87,4 +90,43 @@ public class LargeImageInfo {
     public void setFramework(String framework) {
         this.framework = framework;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.url);
+        dest.writeDouble(this.fileSize);
+        dest.writeDouble(this.memorySize);
+        dest.writeInt(this.width);
+        dest.writeInt(this.height);
+        dest.writeString(this.framework);
+    }
+
+    public LargeImageInfo() {
+    }
+
+    protected LargeImageInfo(Parcel in) {
+        this.url = in.readString();
+        this.fileSize = in.readDouble();
+        this.memorySize = in.readDouble();
+        this.width = in.readInt();
+        this.height = in.readInt();
+        this.framework = in.readString();
+    }
+
+    public static final Creator<LargeImageInfo> CREATOR = new Creator<LargeImageInfo>() {
+        @Override
+        public LargeImageInfo createFromParcel(Parcel source) {
+            return new LargeImageInfo(source);
+        }
+
+        @Override
+        public LargeImageInfo[] newArray(int size) {
+            return new LargeImageInfo[size];
+        }
+    };
 }

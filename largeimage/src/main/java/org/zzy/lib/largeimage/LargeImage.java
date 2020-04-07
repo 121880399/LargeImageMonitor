@@ -8,6 +8,8 @@ import android.os.Build;
 import android.provider.Settings;
 import android.util.Log;
 
+import com.tencent.mmkv.MMKV;
+
 import org.zzy.lib.largeimage.aop.okhttp.LargeImageInterceptor;
 
 import java.util.ArrayList;
@@ -58,6 +60,8 @@ public class LargeImage {
      */
     private Dns mDns = Dns.SYSTEM;
 
+
+
     private LargeImage(){}
 
     private static class Holder{
@@ -72,6 +76,8 @@ public class LargeImage {
         APPLICATION = app;
         //默认添加拦截大图
         okHttpInterceptors.add(new LargeImageInterceptor());
+        //初始化MMKV
+        MMKV.initialize(app);
         return this;
     }
 
@@ -159,4 +165,5 @@ public class LargeImage {
     public boolean isLargeImageOpen() {
         return largeImageOpen;
     }
+
 }

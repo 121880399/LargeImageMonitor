@@ -23,17 +23,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DecodeFormat;
-import com.bumptech.glide.request.RequestOptions;
-import com.squareup.picasso.Picasso;
+import com.tencent.mmkv.MMKV;
 
 import org.zzy.lib.largeimage.util.ConvertUtils;
+import org.zzy.lib.largeimage.util.ImageUtil;
 import org.zzy.lib.largeimage.util.ResHelper;
 
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * ================================================
@@ -45,11 +43,6 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class LargeImageManager {
 
-    /**
-     * 保存所有大图信息
-     */
-    private Map<String, LargeImageInfo> mLargeImageInfo = new ConcurrentHashMap<>();
-
     private DecimalFormat mDecimalFormat = new DecimalFormat("0.00");
 
     /**
@@ -58,11 +51,17 @@ public class LargeImageManager {
     Handler mMainHandler = new Handler(Looper.getMainLooper());
 
     /**
+     * 自定义MMKV来存储大图信息
+     */
+    private MMKV mmkv;
+
+    /**
      * 用来保存超标图片信息是否被显示
      */
-    private Map<String,Boolean> mAlarmInfo = new HashMap<>();
+    private Map<String, Boolean> mAlarmInfo = new HashMap<>();
 
     private LargeImageManager() {
+        mmkv = MMKV.mmkvWithID("LargeImage");
     }
 
     private static class Holder {
@@ -73,14 +72,11 @@ public class LargeImageManager {
         return Holder.instance;
     }
 
-
     /**
-     * 得到所有大图信息
-     * 作者: ZhouZhengyi
-     * 创建时间: 2020/4/4 9:26
+     * @return 返回所有超标图片信息
      */
-    public Map<String, LargeImageInfo> getLargeImageInfo() {
-        return mLargeImageInfo;
+    public MMKV getMmkv() {
+        return mmkv;
     }
 
     /**
@@ -96,14 +92,14 @@ public class LargeImageManager {
             //转换成kb
             double size = ConvertUtils.byte2MemorySize(fileSize, ConvertUtils.KB);
             LargeImageInfo largeImageInfo;
-            if (mLargeImageInfo.containsKey(url)) {
-                largeImageInfo = mLargeImageInfo.get(url);
-            } else {
+            if (mmkv.containsKey(url)) {
+                largeImageInfo = mmkv.decodeParcelable(url,LargeImageInfo.class);
+            }else {
                 largeImageInfo = new LargeImageInfo();
                 largeImageInfo.setUrl(url);
-                mLargeImageInfo.put(url, largeImageInfo);
             }
             largeImageInfo.setFileSize(size);
+            mmkv.encode(url, largeImageInfo);
         }
     }
 
@@ -118,31 +114,23 @@ public class LargeImageManager {
         if (memorySize <= 0) {
             return;
         }
-        if(mLargeImageInfo.containsKey(url) && framework.equalsIgnoreCase("Glide")){
-            LargeImageInfo largeImageInfo = mLargeImageInfo.get(url);
-            if(largeImageInfo.getMemorySize()!=0.0){
-                //如果已经存在url，并且已经有内存大小，说明是Glide在加载弹框图片
-                //直接返回，不修改数据
-                return;
-            }
-        }
         if (LargeImage.getInstance().isLargeImageOpen()) {
             final double size = ConvertUtils.byte2MemorySize(memorySize, ConvertUtils.KB);
             //目前采取的策略是，在网络下载图片时不论文件大小是否超标，都将保存数据
             //在这个方法进行判断，如果超标则保存，没有超标则进行删除
-            if (mLargeImageInfo.containsKey(url)) {
-                LargeImageInfo largeImageInfo = mLargeImageInfo.get(url);
+            if (mmkv.containsKey(url)) {
+                LargeImageInfo largeImageInfo = mmkv.decodeParcelable(url,LargeImageInfo.class);
                 //文件和内存大小其中一个超标则保存
                 if (largeImageInfo.getFileSize() > LargeImage.getInstance().getFileSizeThreshold() ||
                         size >= LargeImage.getInstance().getMemorySizeThreshold()) {
-                    //如果文件阈值超标，则不论内存是否超标，都要进行数据存储
                     largeImageInfo.setWidth(width);
                     largeImageInfo.setHeight(height);
                     largeImageInfo.setMemorySize(size);
                     largeImageInfo.setFramework(framework);
+                    mmkv.encode(url,largeImageInfo);
                 } else {
                     //都不超标，则删除
-                    mLargeImageInfo.remove(url);
+                    mmkv.remove(url);
                 }
             } else {
                 //如果从本地加载图片，则没有文件大小数据，这时候也还没存储数据，只能看内存是否超标
@@ -150,11 +138,11 @@ public class LargeImageManager {
                     //超过阈值,进行存储
                     LargeImageInfo largeImageInfo = new LargeImageInfo();
                     largeImageInfo.setUrl(url);
-                    mLargeImageInfo.put(url, largeImageInfo);
                     largeImageInfo.setWidth(width);
                     largeImageInfo.setHeight(height);
                     largeImageInfo.setMemorySize(size);
                     largeImageInfo.setFramework(framework);
+                    mmkv.encode(url, largeImageInfo);
                 }
             }
         }
@@ -168,7 +156,7 @@ public class LargeImageManager {
      * 创建时间: 2020/4/6 17:22
      */
     private void isShwoAlarm(String url) {
-        final LargeImageInfo largeImageInfo = mLargeImageInfo.get(url);
+        final LargeImageInfo largeImageInfo = mmkv.decodeParcelable(url,LargeImageInfo.class);
         //如果文件大小和内存大小都没有超值，是不会有记录的，所以直接返回
         if (null == largeImageInfo) {
             return;
@@ -228,8 +216,8 @@ public class LargeImageManager {
      */
     public void showDialog(final String url, int width, int height, double fileSize, double memorySize) {
         //判断当前URL是否已经添加进去，如果已经添加进去，则不进行添加
-        if(!mAlarmInfo.containsKey(url)){
-            mAlarmInfo.put(url,false);
+        if (!mAlarmInfo.containsKey(url)) {
+            mAlarmInfo.put(url, false);
         }
         //如果为true说明该URL已经被弹出，则不再次弹出
         if (mAlarmInfo.get(url)) {
@@ -311,11 +299,11 @@ public class LargeImageManager {
             });
         }
         //设置图片
-        Glide.with(dialogView).load(url).into(ivThumb);
+        ImageUtil.downloadImage(url,ivThumb);
         AlertDialog alertDialog = builder.setTitle("提示").setView(dialogView).setPositiveButton("关闭", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                mAlarmInfo.put(url,false);
+                mAlarmInfo.put(url, false);
                 dialog.dismiss();
             }
         }).setNegativeButton("不再提醒（直到下次重启）", new DialogInterface.OnClickListener() {
@@ -333,7 +321,7 @@ public class LargeImageManager {
         }
         alertDialog.show();
         //标识正在显示警告
-        mAlarmInfo.put(url,true);
+        mAlarmInfo.put(url, true);
     }
 
 

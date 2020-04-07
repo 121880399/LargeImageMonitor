@@ -20,5 +20,6 @@ ext {
                     "picasso"                 : 'com.squareup.picasso:picasso:2.71828',
                     "fresco"                  : 'com.facebook.fresco:fresco:2.1.0',
                     "image-loader"            : 'com.nostra13.universalimageloader:universal-image-loader:1.9.5',
+                    "MMKV"            : 'com.tencent:mmkv-static:1.1.0',
     ]
 }
