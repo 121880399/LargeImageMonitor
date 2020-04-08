@@ -47,6 +47,7 @@
             android:layout_height="100dp"
             android:layout_marginTop="10dp"
             fresco:placeholderImage="@drawable/ic_alarm"
+            fresco:viewAspectRatio="1.33"
             android:layout_gravity="center_horizontal"
             />
         <TextView

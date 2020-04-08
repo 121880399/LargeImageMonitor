@@ -36,7 +36,13 @@ public class FrescoLargeImageProcessor implements Postprocessor {
 
     @Override
     public CloseableReference<Bitmap> process(Bitmap sourceBitmap, PlatformBitmapFactory bitmapFactory) {
-        sourceBitmap = LargeImageManager.getInstance().transform(mUri.toString(),sourceBitmap,"Fresco",mResizeOptions.width,mResizeOptions.height);
+        int width = 0;
+        int height = 0;
+        if(null != mResizeOptions){
+            width = mResizeOptions.width;
+            height = mResizeOptions.height;
+        }
+        sourceBitmap = LargeImageManager.getInstance().transform(mUri.toString(),sourceBitmap,"Fresco",width,height);
         if(null != mOriginProcessor){
             return mOriginProcessor.process(sourceBitmap,bitmapFactory);
         }

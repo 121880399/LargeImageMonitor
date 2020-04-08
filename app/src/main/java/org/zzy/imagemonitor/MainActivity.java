@@ -73,8 +73,7 @@ public class MainActivity extends AppCompatActivity {
         //2.测试内存大小超过的图片，测试文件大小超过的图片 预期结果：弹出提示（测试第一次加载和从缓存加载的一致性） 测试结果：通过
 //        Uri uri = Uri.parse("https://desk-fd.zol-img.com.cn/t_s960x600c5/g5/M00/09/03/ChMkJl3I0dmIAiyXABDF46MVj1IAAvKLgFJsZUAEMX7384.jpg");
         //3.测试本地图片
-        Uri uri = Uri.parse("res://"+this.getPackageName()+"/"+R.mipmap.ic_launcher);
-        mIVFresco.setAspectRatio(1.33f);
+        Uri uri = Uri.parse("res://"+"drawable/"+R.drawable.ic_test_three);
         mIVFresco.setImageURI(uri);
     }
 
