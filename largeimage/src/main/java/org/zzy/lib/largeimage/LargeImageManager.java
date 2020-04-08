@@ -2,11 +2,13 @@ package org.zzy.lib.largeimage;
 
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
+import android.app.Application;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
@@ -27,6 +29,7 @@ import com.tencent.mmkv.MMKV;
 
 import org.zzy.lib.largeimage.util.ConvertUtils;
 import org.zzy.lib.largeimage.util.ImageUtil;
+import org.zzy.lib.largeimage.util.Reflector;
 import org.zzy.lib.largeimage.util.ResHelper;
 
 import java.text.DecimalFormat;
@@ -260,72 +263,15 @@ public class LargeImageManager {
         TextView tvImageUrl = dialogView.findViewById(R.id.tv_image_url);
         ImageView ivThumb = dialogView.findViewById(R.id.iv_thumb);
         //设置文件大小
-        if (fileSize <= 0) {
-            llFileSize.setVisibility(View.GONE);
-        } else {
-            llFileSize.setVisibility(View.VISIBLE);
-            if (fileSize > LargeImage.getInstance().getFileSizeThreshold()) {
-                ivFileSize.setVisibility(View.VISIBLE);
-            } else {
-                ivFileSize.setVisibility(View.GONE);
-            }
-            tvFileSize.setText(ResHelper.getString(R.string.large_image_file_size, mDecimalFormat.format(fileSize)));
-        }
+        setFileSize(fileSize, llFileSize, tvFileSize, ivFileSize);
         //设置内存大小
-        if (memorySize <= 0) {
-            llMemorySize.setVisibility(View.GONE);
-        } else {
-            llMemorySize.setVisibility(View.VISIBLE);
-            if (memorySize > LargeImage.getInstance().getMemorySizeThreshold()) {
-                ivMemorySize.setVisibility(View.VISIBLE);
-            } else {
-                ivMemorySize.setVisibility(View.GONE);
-            }
-            double size = memorySize / 1024;
-            tvMemorySize.setText(ResHelper.getString(R.string.large_image_memory_size, mDecimalFormat.format(size)));
-        }
+        setMemorySize(memorySize, llMemorySize, tvMemorySize, ivMemorySize);
         //设置图片尺寸
-        if (width <= 0 && height <= 0) {
-            tvSize.setVisibility(View.GONE);
-        } else {
-            tvSize.setVisibility(View.VISIBLE);
-            StringBuilder sb = new StringBuilder();
-            sb.append(width).append("*").append(height);
-            tvSize.setText(ResHelper.getString(R.string.large_image_size, sb.toString()));
-        }
+        setImageSize(width, height, tvSize);
         //设置View尺寸
-        if (targetWidth <= 0 || targetHeigh <= 0) {
-            tvViewSize.setVisibility(View.GONE);
-        } else {
-            tvViewSize.setVisibility(View.VISIBLE);
-            StringBuilder sb = new StringBuilder();
-            sb.append(targetWidth).append("*").append(targetHeigh);
-            tvViewSize.setText(ResHelper.getString(R.string.large_view_size, sb.toString()));
-        }
+        setViewSize(targetWidth, targetHeigh, tvViewSize);
         //设置图片地址
-        if (TextUtils.isEmpty(url)) {
-            tvImageUrl.setVisibility(View.GONE);
-        } else {
-            tvImageUrl.setVisibility(View.VISIBLE);
-            tvImageUrl.setText(ResHelper.getString(R.string.large_image_url, url));
-            tvImageUrl.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    try {
-                        //获取剪贴板管理器
-                        ClipboardManager cm =
-                                (ClipboardManager) LargeImage.APPLICATION.getSystemService(Context.CLIPBOARD_SERVICE);
-                        //创建普通字符型ClipData
-                        ClipData clipData = ClipData.newPlainText("Label", url);
-                        cm.setPrimaryClip(clipData);
-                        Toast.makeText(LargeImage.APPLICATION.getApplicationContext(), "复制成功！", Toast.LENGTH_SHORT).show();
-                    } catch (Exception e) {
-                        Toast.makeText(LargeImage.APPLICATION.getApplicationContext(), "复制失败！", Toast.LENGTH_SHORT).show();
-                        e.printStackTrace();
-                    }
-                }
-            });
-        }
+        setImageUrl(url, tvImageUrl);
         //设置图片
         ivThumb.setImageBitmap(mBitmapCache.get(url));
         AlertDialog alertDialog = builder.setTitle("提示").setView(dialogView).setPositiveButton("关闭",
@@ -351,6 +297,114 @@ public class LargeImageManager {
         alertDialog.show();
         //标识正在显示警告
         mAlarmInfo.put(url, true);
+    }
+
+    private void setImageUrl(final String url, TextView tvImageUrl) {
+        if (TextUtils.isEmpty(url)) {
+            tvImageUrl.setVisibility(View.GONE);
+        } else {
+            tvImageUrl.setVisibility(View.VISIBLE);
+            if(!url.startsWith("http") && !url.startsWith("https")){
+                String tempUrl = url;
+                if(url.contains("/")){
+                    int index = url.lastIndexOf("/");
+                    tempUrl =url.substring(index+1,url.length());
+                }
+                try {
+                    final String resourceName = LargeImage.APPLICATION.getApplicationContext().getResources().getResourceName(Integer.parseInt(tempUrl));
+                    tvImageUrl.setText(ResHelper.getString(R.string.large_image_url, resourceName));
+                    tvImageUrl.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            try {
+                                //获取剪贴板管理器
+                                ClipboardManager cm =
+                                        (ClipboardManager) LargeImage.APPLICATION.getSystemService(Context.CLIPBOARD_SERVICE);
+                                //创建普通字符型ClipData
+                                ClipData clipData = ClipData.newPlainText("Label", resourceName);
+                                cm.setPrimaryClip(clipData);
+                                Toast.makeText(LargeImage.APPLICATION.getApplicationContext(), "复制成功！", Toast.LENGTH_SHORT).show();
+                            } catch (Exception e) {
+                                Toast.makeText(LargeImage.APPLICATION.getApplicationContext(), "复制失败！", Toast.LENGTH_SHORT).show();
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                } catch (NumberFormatException e){
+                    e.printStackTrace();
+                }
+            }else{
+                tvImageUrl.setText(ResHelper.getString(R.string.large_image_url, url));
+                tvImageUrl.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        try {
+                            //获取剪贴板管理器
+                            ClipboardManager cm =
+                                    (ClipboardManager) LargeImage.APPLICATION.getSystemService(Context.CLIPBOARD_SERVICE);
+                            //创建普通字符型ClipData
+                            ClipData clipData = ClipData.newPlainText("Label", url);
+                            cm.setPrimaryClip(clipData);
+                            Toast.makeText(LargeImage.APPLICATION.getApplicationContext(), "复制成功！", Toast.LENGTH_SHORT).show();
+                        } catch (Exception e) {
+                            Toast.makeText(LargeImage.APPLICATION.getApplicationContext(), "复制失败！", Toast.LENGTH_SHORT).show();
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            }
+        }
+    }
+
+    private void setViewSize(int targetWidth, int targetHeigh, TextView tvViewSize) {
+        if (targetWidth <= 0 || targetHeigh <= 0) {
+            tvViewSize.setVisibility(View.GONE);
+        } else {
+            tvViewSize.setVisibility(View.VISIBLE);
+            StringBuilder sb = new StringBuilder();
+            sb.append(targetWidth).append("*").append(targetHeigh);
+            tvViewSize.setText(ResHelper.getString(R.string.large_view_size, sb.toString()));
+        }
+    }
+
+    private void setImageSize(int width, int height, TextView tvSize) {
+        if (width <= 0 && height <= 0) {
+            tvSize.setVisibility(View.GONE);
+        } else {
+            tvSize.setVisibility(View.VISIBLE);
+            StringBuilder sb = new StringBuilder();
+            sb.append(width).append("*").append(height);
+            tvSize.setText(ResHelper.getString(R.string.large_image_size, sb.toString()));
+        }
+    }
+
+    private void setMemorySize(double memorySize, LinearLayout llMemorySize, TextView tvMemorySize, ImageView ivMemorySize) {
+        if (memorySize <= 0) {
+            llMemorySize.setVisibility(View.GONE);
+        } else {
+            llMemorySize.setVisibility(View.VISIBLE);
+            if (memorySize > LargeImage.getInstance().getMemorySizeThreshold()) {
+                ivMemorySize.setVisibility(View.VISIBLE);
+            } else {
+                ivMemorySize.setVisibility(View.GONE);
+            }
+            double size = memorySize / 1024;
+            tvMemorySize.setText(ResHelper.getString(R.string.large_image_memory_size, mDecimalFormat.format(size)));
+        }
+    }
+
+    private void setFileSize(double fileSize, LinearLayout llFileSize, TextView tvFileSize, ImageView ivFileSize) {
+        if (fileSize <= 0) {
+            llFileSize.setVisibility(View.GONE);
+        } else {
+            llFileSize.setVisibility(View.VISIBLE);
+            if (fileSize > LargeImage.getInstance().getFileSizeThreshold()) {
+                ivFileSize.setVisibility(View.VISIBLE);
+            } else {
+                ivFileSize.setVisibility(View.GONE);
+            }
+            tvFileSize.setText(ResHelper.getString(R.string.large_image_file_size, mDecimalFormat.format(fileSize)));
+        }
     }
 
 
