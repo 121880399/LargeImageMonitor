@@ -32,6 +32,7 @@ import org.zzy.lib.largeimage.util.ResHelper;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * ================================================
@@ -59,6 +60,11 @@ public class LargeImageManager {
      * 用来保存超标图片信息是否被显示
      */
     private Map<String, Boolean> mAlarmInfo = new HashMap<>();
+
+    /**
+     * 缓存超标的Bitmap，用于弹窗显示
+     */
+    private Map<String,Bitmap> mBitmapCache = new ConcurrentHashMap<>();
 
     private LargeImageManager() {
         mmkv = MMKV.mmkvWithID("LargeImage");
@@ -93,8 +99,8 @@ public class LargeImageManager {
             double size = ConvertUtils.byte2MemorySize(fileSize, ConvertUtils.KB);
             LargeImageInfo largeImageInfo;
             if (mmkv.containsKey(url)) {
-                largeImageInfo = mmkv.decodeParcelable(url,LargeImageInfo.class);
-            }else {
+                largeImageInfo = mmkv.decodeParcelable(url, LargeImageInfo.class);
+            } else {
                 largeImageInfo = new LargeImageInfo();
                 largeImageInfo.setUrl(url);
             }
@@ -110,7 +116,8 @@ public class LargeImageManager {
      * 作者: ZhouZhengyi
      * 创建时间: 2020/4/4 8:32
      */
-    public void saveImageInfo(final String url, long memorySize, final int width, final int height, String framework) {
+    public void saveImageInfo(final String url, long memorySize, final int width, final int height, String framework,
+                              int targetWidth, int targetHeight, Bitmap bitmap) {
         if (memorySize <= 0) {
             return;
         }
@@ -119,7 +126,7 @@ public class LargeImageManager {
             //目前采取的策略是，在网络下载图片时不论文件大小是否超标，都将保存数据
             //在这个方法进行判断，如果超标则保存，没有超标则进行删除
             if (mmkv.containsKey(url)) {
-                LargeImageInfo largeImageInfo = mmkv.decodeParcelable(url,LargeImageInfo.class);
+                LargeImageInfo largeImageInfo = mmkv.decodeParcelable(url, LargeImageInfo.class);
                 //文件和内存大小其中一个超标则保存
                 if (largeImageInfo.getFileSize() > LargeImage.getInstance().getFileSizeThreshold() ||
                         size >= LargeImage.getInstance().getMemorySizeThreshold()) {
@@ -127,13 +134,16 @@ public class LargeImageManager {
                     largeImageInfo.setHeight(height);
                     largeImageInfo.setMemorySize(size);
                     largeImageInfo.setFramework(framework);
-                    mmkv.encode(url,largeImageInfo);
+                    largeImageInfo.setTargetWidth(targetWidth);
+                    largeImageInfo.setTargetHeight(targetHeight);
+                    mBitmapCache.put(url,bitmap);
+                    mmkv.encode(url, largeImageInfo);
                 } else {
                     //都不超标，则删除
                     mmkv.remove(url);
                 }
             } else {
-                //如果从本地加载图片，则没有文件大小数据，这时候也还没存储数据，只能看内存是否超标
+                //如果从本地加载图片，则没有文件大小数据，第一次加载时也还没存储数据，只能看内存是否超标
                 if (size >= LargeImage.getInstance().getMemorySizeThreshold()) {
                     //超过阈值,进行存储
                     LargeImageInfo largeImageInfo = new LargeImageInfo();
@@ -142,6 +152,9 @@ public class LargeImageManager {
                     largeImageInfo.setHeight(height);
                     largeImageInfo.setMemorySize(size);
                     largeImageInfo.setFramework(framework);
+                    largeImageInfo.setTargetWidth(targetWidth);
+                    largeImageInfo.setTargetHeight(targetHeight);
+                    mBitmapCache.put(url,bitmap);
                     mmkv.encode(url, largeImageInfo);
                 }
             }
@@ -156,7 +169,7 @@ public class LargeImageManager {
      * 创建时间: 2020/4/6 17:22
      */
     private void isShwoAlarm(String url) {
-        final LargeImageInfo largeImageInfo = mmkv.decodeParcelable(url,LargeImageInfo.class);
+        final LargeImageInfo largeImageInfo = mmkv.decodeParcelable(url, LargeImageInfo.class);
         //如果文件大小和内存大小都没有超值，是不会有记录的，所以直接返回
         if (null == largeImageInfo) {
             return;
@@ -167,7 +180,9 @@ public class LargeImageManager {
             mMainHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    showDialog(largeImageInfo.getUrl(), largeImageInfo.getWidth(), largeImageInfo.getHeight(), largeImageInfo.getFileSize(), largeImageInfo.getMemorySize());
+                    showDialog(largeImageInfo.getUrl(), largeImageInfo.getWidth(), largeImageInfo.getHeight(),
+                            largeImageInfo.getFileSize(), largeImageInfo.getMemorySize(), largeImageInfo.getTargetWidth(),
+                            largeImageInfo.getTargetHeight());
                 }
             });
         }
@@ -178,9 +193,9 @@ public class LargeImageManager {
      * 作者: ZhouZhengyi
      * 创建时间: 2020/4/4 9:17
      */
-    public Bitmap transform(String imageUrl, BitmapDrawable bitmapDrawable, String framework) {
+    public Bitmap transform(String imageUrl, BitmapDrawable bitmapDrawable, String framework, int targetWidth, int targetHeight) {
         Bitmap sourceBitmap = ConvertUtils.drawable2Bitmap(bitmapDrawable);
-        return transform(imageUrl, sourceBitmap, framework);
+        return transform(imageUrl, sourceBitmap, framework, targetWidth, targetHeight);
     }
 
     /**
@@ -188,12 +203,13 @@ public class LargeImageManager {
      * 作者: ZhouZhengyi
      * 创建时间: 2020/4/4 9:17
      */
-    public Bitmap transform(String imageUrl, Bitmap sourceBitmap, String framework) {
+    public Bitmap transform(String imageUrl, Bitmap sourceBitmap, String framework, int targetWidth, int targetHeight) {
         if (null == sourceBitmap) {
             return null;
         }
         if (LargeImage.getInstance().isLargeImageOpen()) {
-            saveImageInfo(imageUrl, sourceBitmap.getByteCount(), sourceBitmap.getWidth(), sourceBitmap.getHeight(), framework);
+            saveImageInfo(imageUrl, sourceBitmap.getByteCount(), sourceBitmap.getWidth(), sourceBitmap.getHeight(), framework,
+                    targetWidth, targetHeight, sourceBitmap);
         }
         return sourceBitmap;
     }
@@ -214,7 +230,8 @@ public class LargeImageManager {
      * 作者: ZhouZhengyi
      * 创建时间: 2020/4/4 22:05
      */
-    public void showDialog(final String url, int width, int height, double fileSize, double memorySize) {
+    public void showDialog(final String url, int width, int height, double fileSize, double memorySize, int targetWidth,
+                           int targetHeigh) {
         //判断当前URL是否已经添加进去，如果已经添加进去，则不进行添加
         if (!mAlarmInfo.containsKey(url)) {
             mAlarmInfo.put(url, false);
@@ -239,6 +256,7 @@ public class LargeImageManager {
         TextView tvFileSize = dialogView.findViewById(R.id.tv_file_size);
         ImageView ivFileSize = dialogView.findViewById(R.id.iv_file_size);
         TextView tvSize = dialogView.findViewById(R.id.tv_size);
+        TextView tvViewSize = dialogView.findViewById(R.id.tv_view_size);
         TextView tvImageUrl = dialogView.findViewById(R.id.tv_image_url);
         ImageView ivThumb = dialogView.findViewById(R.id.iv_thumb);
         //设置文件大小
@@ -275,6 +293,15 @@ public class LargeImageManager {
             sb.append(width).append("*").append(height);
             tvSize.setText(ResHelper.getString(R.string.large_image_size, sb.toString()));
         }
+        //设置View尺寸
+        if (targetWidth <= 0 || targetHeigh <= 0) {
+            tvViewSize.setVisibility(View.GONE);
+        } else {
+            tvViewSize.setVisibility(View.VISIBLE);
+            StringBuilder sb = new StringBuilder();
+            sb.append(targetWidth).append("*").append(targetHeigh);
+            tvViewSize.setText(ResHelper.getString(R.string.large_view_size, sb.toString()));
+        }
         //设置图片地址
         if (TextUtils.isEmpty(url)) {
             tvImageUrl.setVisibility(View.GONE);
@@ -286,7 +313,8 @@ public class LargeImageManager {
                 public void onClick(View v) {
                     try {
                         //获取剪贴板管理器
-                        ClipboardManager cm = (ClipboardManager) LargeImage.APPLICATION.getSystemService(Context.CLIPBOARD_SERVICE);
+                        ClipboardManager cm =
+                                (ClipboardManager) LargeImage.APPLICATION.getSystemService(Context.CLIPBOARD_SERVICE);
                         //创建普通字符型ClipData
                         ClipData clipData = ClipData.newPlainText("Label", url);
                         cm.setPrimaryClip(clipData);
@@ -299,8 +327,9 @@ public class LargeImageManager {
             });
         }
         //设置图片
-        ImageUtil.downloadImage(url,ivThumb);
-        AlertDialog alertDialog = builder.setTitle("提示").setView(dialogView).setPositiveButton("关闭", new DialogInterface.OnClickListener() {
+        ivThumb.setImageBitmap(mBitmapCache.get(url));
+        AlertDialog alertDialog = builder.setTitle("提示").setView(dialogView).setPositiveButton("关闭",
+                new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 mAlarmInfo.put(url, false);

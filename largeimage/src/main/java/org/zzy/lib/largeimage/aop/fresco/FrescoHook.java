@@ -2,6 +2,7 @@ package org.zzy.lib.largeimage.aop.fresco;
 
 import android.net.Uri;
 
+import com.facebook.imagepipeline.common.ResizeOptions;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.facebook.imagepipeline.listener.RequestListener;
 import com.facebook.imagepipeline.request.Postprocessor;
@@ -19,7 +20,7 @@ import java.util.Set;
  */
 public class FrescoHook {
 
-    public static Postprocessor process(Uri uri, Postprocessor postprocessor){
-       return new FrescoLargeImageProcessor(postprocessor,uri);
+    public static Postprocessor process(Uri uri, Postprocessor postprocessor,ResizeOptions resizeOptions){
+       return new FrescoLargeImageProcessor(postprocessor,uri,resizeOptions);
     }
 }

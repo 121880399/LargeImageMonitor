@@ -37,7 +37,7 @@ public class PicassoMethodAdapter extends AdviceAdapter {
      * 3.把它们传入hook方法
      * 4.在方法中加入我们自己的Transformation
      * 5.将设置好以后的 List<Transformation> transformations返回给第四个参数
-     * transformations = PicassoHook.process(uri,transformations);
+     *  transformations = PicassoHook.process(uri,transformations,resourceId,targetWidth,targetHeight);
     * 作者: ZhouZhengyi
     * 创建时间: 2020/4/2 11:26
     */
@@ -46,7 +46,10 @@ public class PicassoMethodAdapter extends AdviceAdapter {
         super.onMethodEnter();
         mv.visitVarInsn(ALOAD, 1);
         mv.visitVarInsn(ALOAD, 4);
-        mv.visitMethodInsn(INVOKESTATIC, "org/zzy/lib/largeimage/aop/picasso/PicassoHook", "process", "(Landroid/net/Uri;Ljava/util/List;)Ljava/util/List;", false);
+        mv.visitVarInsn(ILOAD, 2);
+        mv.visitVarInsn(ILOAD, 5);
+        mv.visitVarInsn(ILOAD, 6);
+        mv.visitMethodInsn(INVOKESTATIC, "org/zzy/lib/largeimage/aop/picasso/PicassoHook", "process", "(Landroid/net/Uri;Ljava/util/List;III)Ljava/util/List;", false);
         mv.visitVarInsn(ASTORE, 4);
     }
 }

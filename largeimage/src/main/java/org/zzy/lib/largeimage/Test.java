@@ -1,7 +1,13 @@
 package org.zzy.lib.largeimage;
 
 
-import okhttp3.Dns;
+import android.net.Uri;
+
+import com.squareup.picasso.Transformation;
+
+import org.zzy.lib.largeimage.aop.picasso.PicassoHook;
+
+import java.util.List;
 
 /**
  * ================================================
@@ -19,13 +25,13 @@ public class Test {
 //    }
 
     //模拟picasso
-//    private void init(Uri uri,List<Transformation> transformations){
-//        transformations = PicassoHook.process(uri,transformations);
+//    private void init(Uri uri, List<Transformation> transformations, int resourceId, int targetWidth, int targetHeight){
+//        transformations = PicassoHook.process(uri,transformations,resourceId,targetWidth,targetHeight);
 //    }
 
     //模拟fresco
-//    private void init(Builder builder){
-//        builder.mRequestListeners = FrescoHook.process(builder.mRequestListeners);
+//    private void init(ImageRequestBuilder builder){
+//        builder.setPostprocessor(FrescoHook.process(builder.getSourceUri(),builder.getPostprocessor(),builder.getResizeOptions()));
 //    }
 //
 //    public static class Builder {
@@ -45,10 +51,10 @@ public class Test {
 //        interceptors.addAll(LargeImage.getInstance().getOkHttpInterceptors());
 //        networkInterceptors.addAll(LargeImage.getInstance().getOkHttpNetworkInterceptors());
 //    }
-    Dns dns;
-    public void openConnection() {
-        dns = LargeImage.getInstance().getDns();
-    }
+//    Dns dns;
+//    public void openConnection() {
+//        dns = LargeImage.getInstance().getDns();
+//    }
 
 
 }

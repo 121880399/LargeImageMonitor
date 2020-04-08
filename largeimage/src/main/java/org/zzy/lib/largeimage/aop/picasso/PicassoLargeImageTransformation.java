@@ -17,15 +17,23 @@ import org.zzy.lib.largeimage.LargeImageManager;
  */
 public class PicassoLargeImageTransformation implements Transformation {
 
-    private Uri mUri;
+    private String mUri;
+    private int targetWidth;
+    private int targetHeight;
 
-    public PicassoLargeImageTransformation(Uri uri){
-        this.mUri = uri;
+    public PicassoLargeImageTransformation(Uri uri,int resourceId,int targetWidth, int targetHeight){
+        if(uri == null){
+            mUri = String.valueOf(resourceId);
+        }else{
+            mUri = uri.toString();
+        }
+        this.targetWidth=targetWidth;
+        this.targetHeight=targetHeight;
     }
 
     @Override
     public Bitmap transform(Bitmap source) {
-       return LargeImageManager.getInstance().transform(mUri.toString(),source,"Picasso");
+       return LargeImageManager.getInstance().transform(mUri,source,"Picasso",targetWidth,targetHeight);
     }
 
     @Override

@@ -44,7 +44,7 @@ public class ImageLoaderLargeImageListener implements ImageLoadingListener {
 
     @Override
     public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-        LargeImageManager.getInstance().transform(imageUri,loadedImage,"ImageLoader");
+        LargeImageManager.getInstance().transform(imageUri,loadedImage,"ImageLoader",view.getWidth(),view.getHeight());
         mOriginListener.onLoadingComplete(imageUri, view, loadedImage);
     }
 

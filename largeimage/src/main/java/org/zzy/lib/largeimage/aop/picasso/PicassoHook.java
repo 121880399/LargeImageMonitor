@@ -18,11 +18,11 @@ import java.util.List;
  */
 public class PicassoHook {
 
-    public static List<Transformation> process(Uri uri, List<Transformation> transformations){
+    public static List<Transformation> process(Uri uri, List<Transformation> transformations,int resourceId,int targetWidth, int targetHeight){
         if(null == transformations){
             transformations = new ArrayList<>();
         }
-        transformations.add(new PicassoLargeImageTransformation(uri));
+        transformations.add(new PicassoLargeImageTransformation(uri,resourceId,targetWidth,targetHeight));
         return transformations;
     }
 }

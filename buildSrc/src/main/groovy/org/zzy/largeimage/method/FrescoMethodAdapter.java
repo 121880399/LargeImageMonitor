@@ -48,7 +48,9 @@ public class FrescoMethodAdapter extends AdviceAdapter {
         mv.visitMethodInsn(INVOKEVIRTUAL, "com/facebook/imagepipeline/request/ImageRequestBuilder", "getSourceUri", "()Landroid/net/Uri;", false);
         mv.visitVarInsn(ALOAD, 1);
         mv.visitMethodInsn(INVOKEVIRTUAL, "com/facebook/imagepipeline/request/ImageRequestBuilder", "getPostprocessor", "()Lcom/facebook/imagepipeline/request/Postprocessor;", false);
-        mv.visitMethodInsn(INVOKESTATIC, "org/zzy/lib/largeimage/aop/fresco/FrescoHook", "process", "(Landroid/net/Uri;Lcom/facebook/imagepipeline/request/Postprocessor;)Lcom/facebook/imagepipeline/request/Postprocessor;", false);
+        mv.visitVarInsn(ALOAD, 1);
+        mv.visitMethodInsn(INVOKEVIRTUAL, "com/facebook/imagepipeline/request/ImageRequestBuilder", "getResizeOptions", "()Lcom/facebook/imagepipeline/common/ResizeOptions;", false);
+        mv.visitMethodInsn(INVOKESTATIC, "org/zzy/lib/largeimage/aop/fresco/FrescoHook", "process", "(Landroid/net/Uri;Lcom/facebook/imagepipeline/request/Postprocessor;Lcom/facebook/imagepipeline/common/ResizeOptions;)Lcom/facebook/imagepipeline/request/Postprocessor;", false);
         mv.visitMethodInsn(INVOKEVIRTUAL, "com/facebook/imagepipeline/request/ImageRequestBuilder", "setPostprocessor", "(Lcom/facebook/imagepipeline/request/Postprocessor;)Lcom/facebook/imagepipeline/request/ImageRequestBuilder;", false);
     }
 }

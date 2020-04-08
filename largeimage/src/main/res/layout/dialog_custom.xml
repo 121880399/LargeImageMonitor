@@ -75,11 +75,20 @@
         android:id="@+id/tv_size"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="22dp"
-        android:layout_toRightOf="@id/iv_thumb"
         android:layout_below="@id/ll_file_size"
+        android:layout_marginLeft="22dp"
         android:layout_marginTop="10dp"
+        android:layout_toRightOf="@id/iv_thumb"
         tools:text="图片尺寸:200*300" />
+    <TextView
+        android:id="@+id/tv_view_size"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ll_file_size"
+        android:layout_marginLeft="22dp"
+        android:layout_marginTop="10dp"
+        android:layout_toRightOf="@id/iv_thumb"
+        tools:text="View尺寸:200*300" />
     <TextView
         android:id="@+id/tv_image_url"
         android:layout_width="wrap_content"

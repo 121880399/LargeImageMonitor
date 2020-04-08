@@ -1,5 +1,6 @@
 package org.zzy.lib.largeimage;
 
+import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -42,6 +43,32 @@ public class LargeImageInfo implements Parcelable {
      * 加载图片所使用的框架
      */
     private String framework;
+
+    /**
+     * View的宽
+     */
+    private int targetWidth;
+    /**
+     * View的高
+     */
+    private int targetHeight;
+
+
+    public int getTargetWidth() {
+        return targetWidth;
+    }
+
+    public void setTargetWidth(int targetWidth) {
+        this.targetWidth = targetWidth;
+    }
+
+    public int getTargetHeight() {
+        return targetHeight;
+    }
+
+    public void setTargetHeight(int targetHeight) {
+        this.targetHeight = targetHeight;
+    }
 
     public String getUrl() {
         return url;
@@ -91,6 +118,9 @@ public class LargeImageInfo implements Parcelable {
         this.framework = framework;
     }
 
+    public LargeImageInfo() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -104,9 +134,8 @@ public class LargeImageInfo implements Parcelable {
         dest.writeInt(this.width);
         dest.writeInt(this.height);
         dest.writeString(this.framework);
-    }
-
-    public LargeImageInfo() {
+        dest.writeInt(this.targetWidth);
+        dest.writeInt(this.targetHeight);
     }
 
     protected LargeImageInfo(Parcel in) {
@@ -116,6 +145,8 @@ public class LargeImageInfo implements Parcelable {
         this.width = in.readInt();
         this.height = in.readInt();
         this.framework = in.readString();
+        this.targetWidth = in.readInt();
+        this.targetHeight = in.readInt();
     }
 
     public static final Creator<LargeImageInfo> CREATOR = new Creator<LargeImageInfo>() {

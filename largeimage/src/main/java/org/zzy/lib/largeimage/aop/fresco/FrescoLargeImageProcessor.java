@@ -7,6 +7,7 @@ import android.net.Uri;
 import com.facebook.cache.common.CacheKey;
 import com.facebook.common.references.CloseableReference;
 import com.facebook.imagepipeline.bitmaps.PlatformBitmapFactory;
+import com.facebook.imagepipeline.common.ResizeOptions;
 import com.facebook.imagepipeline.nativecode.Bitmaps;
 import com.facebook.imagepipeline.request.Postprocessor;
 
@@ -26,15 +27,16 @@ public class FrescoLargeImageProcessor implements Postprocessor {
 
     private Postprocessor mOriginProcessor;
     private Uri mUri;
-
-    public FrescoLargeImageProcessor(Postprocessor mOriginProcessor, Uri mUri) {
+    private ResizeOptions mResizeOptions;
+    public FrescoLargeImageProcessor(Postprocessor mOriginProcessor, Uri mUri, ResizeOptions resizeOptions) {
         this.mOriginProcessor = mOriginProcessor;
         this.mUri = mUri;
+        this.mResizeOptions = resizeOptions;
     }
 
     @Override
     public CloseableReference<Bitmap> process(Bitmap sourceBitmap, PlatformBitmapFactory bitmapFactory) {
-        sourceBitmap = LargeImageManager.getInstance().transform(mUri.toString(),sourceBitmap,"Fresco");
+        sourceBitmap = LargeImageManager.getInstance().transform(mUri.toString(),sourceBitmap,"Fresco",mResizeOptions.width,mResizeOptions.height);
         if(null != mOriginProcessor){
             return mOriginProcessor.process(sourceBitmap,bitmapFactory);
         }
