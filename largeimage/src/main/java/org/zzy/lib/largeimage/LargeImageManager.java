@@ -312,47 +312,46 @@ public class LargeImageManager {
                 }
                 try {
                     final String resourceName = LargeImage.APPLICATION.getApplicationContext().getResources().getResourceName(Integer.parseInt(tempUrl));
-                    tvImageUrl.setText(ResHelper.getString(R.string.large_image_url, resourceName));
+                    if(TextUtils.isEmpty(resourceName)){
+                        tvImageUrl.setText(ResHelper.getString(R.string.large_image_url, "本地图片"));
+                    }else {
+                        tvImageUrl.setText(ResHelper.getString(R.string.large_image_url, resourceName));
+                    }
                     tvImageUrl.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            try {
-                                //获取剪贴板管理器
-                                ClipboardManager cm =
-                                        (ClipboardManager) LargeImage.APPLICATION.getSystemService(Context.CLIPBOARD_SERVICE);
-                                //创建普通字符型ClipData
-                                ClipData clipData = ClipData.newPlainText("Label", resourceName);
-                                cm.setPrimaryClip(clipData);
-                                Toast.makeText(LargeImage.APPLICATION.getApplicationContext(), "复制成功！", Toast.LENGTH_SHORT).show();
-                            } catch (Exception e) {
-                                Toast.makeText(LargeImage.APPLICATION.getApplicationContext(), "复制失败！", Toast.LENGTH_SHORT).show();
-                                e.printStackTrace();
-                            }
+                            copyToClipboard(resourceName);
                         }
                     });
                 } catch (NumberFormatException e){
+                    //不是请求网络，也没用resId,统一显示为本地图片
                     e.printStackTrace();
+                    tvImageUrl.setText(ResHelper.getString(R.string.large_image_url, "本地图片"));
                 }
             }else{
                 tvImageUrl.setText(ResHelper.getString(R.string.large_image_url, url));
                 tvImageUrl.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        try {
-                            //获取剪贴板管理器
-                            ClipboardManager cm =
-                                    (ClipboardManager) LargeImage.APPLICATION.getSystemService(Context.CLIPBOARD_SERVICE);
-                            //创建普通字符型ClipData
-                            ClipData clipData = ClipData.newPlainText("Label", url);
-                            cm.setPrimaryClip(clipData);
-                            Toast.makeText(LargeImage.APPLICATION.getApplicationContext(), "复制成功！", Toast.LENGTH_SHORT).show();
-                        } catch (Exception e) {
-                            Toast.makeText(LargeImage.APPLICATION.getApplicationContext(), "复制失败！", Toast.LENGTH_SHORT).show();
-                            e.printStackTrace();
-                        }
+                        copyToClipboard(url);
                     }
                 });
             }
+        }
+    }
+
+    private void copyToClipboard(String resourceName) {
+        try {
+            //获取剪贴板管理器
+            ClipboardManager cm =
+                    (ClipboardManager) LargeImage.APPLICATION.getSystemService(Context.CLIPBOARD_SERVICE);
+            //创建普通字符型ClipData
+            ClipData clipData = ClipData.newPlainText("Label", resourceName);
+            cm.setPrimaryClip(clipData);
+            Toast.makeText(LargeImage.APPLICATION.getApplicationContext(), "复制成功！", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            Toast.makeText(LargeImage.APPLICATION.getApplicationContext(), "复制失败！", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
         }
     }
 

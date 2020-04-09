@@ -3,6 +3,7 @@ package org.zzy.imagemonitor;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.widget.ImageView;
@@ -64,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
 //        Glide.with(this).load("http://desk.fd.zol-img.com.cn/t_s1680x1050/g5/M00/09/03/ChMkJ13I0O-IUxnqAA6O1fF1dWwAAvKJgAYVvEADo7t268.jpg").into(mIVGlide);
         //3.测试本地图片
         Glide.with(this).load(R.drawable.ic_test_two).into(mIVGlide);
+//        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_test_three);
+//        Glide.with(this).load(bitmap).into(mIVGlide);
 
     }
 

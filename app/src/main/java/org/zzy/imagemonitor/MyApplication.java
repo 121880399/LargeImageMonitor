@@ -31,7 +31,7 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         //初始化大图监控
-        LargeImage.getInstance().install(this).setFileSizeThreshold(400.0).setMemorySizeThreshold(700);
+        LargeImage.getInstance().install(this).setFileSizeThreshold(400.0).setMemorySizeThreshold(100);
         Fresco.initialize(this);
 
     }
