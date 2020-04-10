@@ -7,9 +7,17 @@ import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.View;
+import android.view.animation.BounceInterpolator;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.tencent.mmkv.MMKV;
+import com.yhao.floatwindow.FloatWindow;
+import com.yhao.floatwindow.MoveType;
+import com.yhao.floatwindow.Screen;
 
+import org.zzy.lib.largeimage.activity.LargeImageListActivity;
 import org.zzy.lib.largeimage.aop.okhttp.LargeImageInterceptor;
 
 import java.util.ArrayList;
@@ -78,6 +86,27 @@ public class LargeImage {
         okHttpInterceptors.add(new LargeImageInterceptor());
         //初始化MMKV
         MMKV.initialize(app);
+        ImageView ivIcon = new ImageView(app);
+        ivIcon.setImageResource(R.drawable.ic_satellite);
+        FloatWindow.with(app)
+                .setView(ivIcon)
+                .setWidth(Screen.width, 0.2f) //设置悬浮控件宽高
+                .setHeight(Screen.width, 0.2f)
+                .setX(Screen.width, 0.8f)
+                .setY(Screen.height, 0.3f)
+                .setMoveType(MoveType.slide,0,0)
+                .setMoveStyle(500, new BounceInterpolator())
+                .setDesktopShow(false)
+                .build();
+        ivIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setClass(APPLICATION, LargeImageListActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                APPLICATION.startActivity(intent);
+            }
+        });
         return this;
     }
 
@@ -141,6 +170,8 @@ public class LargeImage {
         this.mDns = dns;
         return this;
     }
+
+
 
     public Dns getDns(){
         return mDns;

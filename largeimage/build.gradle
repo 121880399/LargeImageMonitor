@@ -10,6 +10,9 @@ android {
         versionName rootProject.ext.android["versionName"]
 
     }
+    lintOptions {
+        abortOnError false
+    }
 
     buildTypes {
         release {
@@ -28,5 +31,11 @@ dependencies {
     implementation rootProject.ext.dependencies["fresco"]
     implementation rootProject.ext.dependencies["image-loader"]
     implementation rootProject.ext.dependencies["MMKV"]
+    implementation (rootProject.ext.dependencies["FloatWindow"]){
+        exclude module: 'support-v4'
+        exclude module: 'support-compat'
+    }
+    implementation rootProject.ext.dependencies["brvah"]
+    implementation rootProject.ext.dependencies["androidx"]
 
 }

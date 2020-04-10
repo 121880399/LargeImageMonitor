@@ -69,6 +69,11 @@ public class LargeImageManager {
      */
     private Map<String,Bitmap> mBitmapCache = new ConcurrentHashMap<>();
 
+    /**
+     * 是否开启弹窗
+     */
+    private boolean openDialog = false;
+
     private LargeImageManager() {
         mmkv = MMKV.mmkvWithID("LargeImage");
     }
@@ -162,7 +167,10 @@ public class LargeImageManager {
                 }
             }
         }
-        isShwoAlarm(url);
+        if(openDialog) {
+            //开启弹窗模式，才显示
+            isShwoAlarm(url);
+        }
     }
 
     /**
@@ -405,6 +413,14 @@ public class LargeImageManager {
             tvFileSize.setText(ResHelper.getString(R.string.large_image_file_size, mDecimalFormat.format(fileSize)));
         }
     }
+    /**
+     * @param openDialog 是否开启弹窗
+     */
+    public void setOpenDialog(boolean openDialog) {
+        this.openDialog = openDialog;
+    }
 
-
+    public boolean isOpenDialog() {
+        return openDialog;
+    }
 }

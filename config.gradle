@@ -1,8 +1,8 @@
 ext {
     android = [
-               applicationId             : "com.didichuxing.doraemondemo",
+               applicationId             : "org.zzy.imagemonitor",
                compileSdkVersion         : 29,
-               minSdkVersion             : 16,
+               minSdkVersion             : 19,
                targetSdkVersion          : 29,
                versionCode               : 1,
                versionName               : "1.0.0",
@@ -20,6 +20,9 @@ ext {
                     "picasso"                 : 'com.squareup.picasso:picasso:2.71828',
                     "fresco"                  : 'com.facebook.fresco:fresco:2.1.0',
                     "image-loader"            : 'com.nostra13.universalimageloader:universal-image-loader:1.9.5',
-                    "MMKV"            : 'com.tencent:mmkv-static:1.1.0',
+                    "MMKV"                    : 'com.tencent:mmkv-static:1.1.0',
+                    "FloatWindow"             : 'com.github.yhaolpz:FloatWindow:1.0.9',
+                    "brvah"                   : 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.50',
+                    "androidx"                 : 'androidx.appcompat:appcompat:1.1.0',
     ]
 }
