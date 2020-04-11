@@ -75,7 +75,7 @@ public class LargeImageManager {
     private boolean openDialog = false;
 
     private LargeImageManager() {
-        mmkv = MMKV.mmkvWithID("LargeImage");
+        mmkv = MMKV.mmkvWithID("LargeImageManager");
     }
 
     private static class Holder {
@@ -144,6 +144,7 @@ public class LargeImageManager {
                     largeImageInfo.setFramework(framework);
                     largeImageInfo.setTargetWidth(targetWidth);
                     largeImageInfo.setTargetHeight(targetHeight);
+                    largeImageInfo.setUnUseCount(0);
                     mBitmapCache.put(url,bitmap);
                     mInfoCache.put(url,largeImageInfo);
                     mmkv.encode(url, largeImageInfo);
@@ -165,6 +166,7 @@ public class LargeImageManager {
                     largeImageInfo.setFramework(framework);
                     largeImageInfo.setTargetWidth(targetWidth);
                     largeImageInfo.setTargetHeight(targetHeight);
+                    largeImageInfo.setUnUseCount(0);
                     mBitmapCache.put(url,bitmap);
                     mInfoCache.put(url,largeImageInfo);
                     mmkv.encode(url, largeImageInfo);

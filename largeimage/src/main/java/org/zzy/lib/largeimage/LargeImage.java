@@ -1,16 +1,11 @@
 package org.zzy.lib.largeimage;
 
-import android.annotation.TargetApi;
 import android.app.Application;
 import android.content.Intent;
-import android.net.Uri;
-import android.os.Build;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.BounceInterpolator;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.tencent.mmkv.MMKV;
 import com.yhao.floatwindow.FloatWindow;
@@ -68,24 +63,50 @@ public class LargeImage {
      */
     private Dns mDns = Dns.SYSTEM;
 
+    /**
+     * 用来记录当前启动次数
+     */
+    private MMKV mmkv;
 
+    /**
+     * 最大删除值，表示启动多少次以后开始清理mmkv记录的大图信息
+     */
+    private int maxRemoveValue = 20;
 
-    private LargeImage(){}
+    /**
+     * 是否已经调用了install方法
+     */
+    private boolean isCalled = false;
 
-    private static class Holder{
+    /**
+     * 当前删除值
+     */
+    private int currentRemoveValue = 1;
+
+    private LargeImage() {
+
+    }
+
+    private static class Holder {
         private static LargeImage INSTANCE = new LargeImage();
     }
 
-    public static LargeImage getInstance(){
+    public static LargeImage getInstance() {
         return Holder.INSTANCE;
     }
 
-    public LargeImage install(Application app){
+    public LargeImage install(Application app) {
+        if (isCalled) {
+            Log.e(TAG, "Don't call this method repeatedly!");
+            return this;
+        }
+        isCalled = true;
         APPLICATION = app;
         //默认添加拦截大图
         okHttpInterceptors.add(new LargeImageInterceptor());
         //初始化MMKV
         MMKV.initialize(app);
+        isRemoveMmkv();
         ImageView ivIcon = new ImageView(app);
         ivIcon.setImageResource(R.drawable.ic_satellite);
         FloatWindow.with(app)
@@ -94,7 +115,7 @@ public class LargeImage {
                 .setHeight(Screen.width, 0.2f)
                 .setX(Screen.width, 0.8f)
                 .setY(Screen.height, 0.3f)
-                .setMoveType(MoveType.slide,0,0)
+                .setMoveType(MoveType.slide, 0, 0)
                 .setMoveStyle(500, new BounceInterpolator())
                 .setDesktopShow(false)
                 .build();
@@ -111,7 +132,61 @@ public class LargeImage {
     }
 
     /**
+     * 是否清理mmkv中的值
+     * 作者: ZhouZhengyi
+     * 创建时间: 2020/4/11 21:20
+     */
+    private void isRemoveMmkv() {
+        mmkv = MMKV.mmkvWithID("LargeImage");
+        if (!mmkv.containsKey("maxRemoveValue")) {
+            mmkv.encode("maxRemoveValue", maxRemoveValue);
+        } else {
+            maxRemoveValue = mmkv.decodeInt("maxRemoveValue");
+        }
+        if (!mmkv.containsKey("currentRemoveValue")) {
+            mmkv.encode("currentRemoveValue", 1);
+        } else {
+            currentRemoveValue = mmkv.decodeInt("currentRemoveValue");
+        }
+        //开启一个线程，给保存大图信息的mmkv中的每个entry的unUseCount加1
+        // 当前启动次数已经达到了该清理mmkv的最大值，那么开启一个线程清理存放大图信息的mmkv
+        Thread thread = new Thread(runnable);
+        thread.start();
+    }
+
+    private Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                MMKV largeImageMmkv = LargeImageManager.getInstance().getMmkv();
+                for (String key : largeImageMmkv.allKeys()) {
+                    LargeImageInfo largeImageInfo = largeImageMmkv.decodeParcelable(key, LargeImageInfo.class);
+                    //所有保存的信息未使用次数加一
+                    largeImageInfo.setUnUseCount(largeImageInfo.getUnUseCount() + 1);
+                    largeImageMmkv.encode(key, largeImageInfo);
+                }
+                if (currentRemoveValue >= maxRemoveValue) {
+                    for (String key : largeImageMmkv.allKeys()) {
+                        LargeImageInfo largeImageInfo = largeImageMmkv.decodeParcelable(key, LargeImageInfo.class);
+                        //如果该大图信息未使用次数大于最大删除值，那么说明该信息已经很久不用了，直接删除
+                        if (largeImageInfo.getUnUseCount() >= maxRemoveValue) {
+                            largeImageMmkv.remove(key);
+                        }
+                    }
+                    //清理完后，当前启动次数清零
+                    currentRemoveValue = 0;
+                }
+                currentRemoveValue++;
+                mmkv.encode("currentRemoveValue", currentRemoveValue);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+    };
+
+    /**
      * 设置文件阈值 单位为kb
+     *
      * @param fileSizeThreshold 文件阈值 单位kb
      * @return
      */
@@ -122,6 +197,7 @@ public class LargeImage {
 
     /**
      * 设置内存阈值 单位为kb
+     *
      * @param memorySizeThreshold 内存阈值 单位为kb
      * @return
      */
@@ -141,10 +217,11 @@ public class LargeImage {
     /**
      * 因为实现了Okhttp的全局插桩，所以提供一个可以添加拦截器的方法
      * 让用户可以自定义拦截器实现自己项目和三方库的OKhttp全局监听
+     *
      * @param interceptor 应用拦截器
      */
-    public LargeImage addOkHttpInterceptor(Interceptor interceptor){
-        if(null != okHttpInterceptors){
+    public LargeImage addOkHttpInterceptor(Interceptor interceptor) {
+        if (null != okHttpInterceptors) {
             okHttpInterceptors.add(interceptor);
         }
         return this;
@@ -152,10 +229,11 @@ public class LargeImage {
 
     /**
      * 添加Okhttp网络拦截器
+     *
      * @param networkInterceptor 网络拦截器
      */
-    public LargeImage addOkHttpNetworkInterceptor(Interceptor networkInterceptor){
-        if(null != okHttpNetworkInterceptors) {
+    public LargeImage addOkHttpNetworkInterceptor(Interceptor networkInterceptor) {
+        if (null != okHttpNetworkInterceptors) {
             okHttpNetworkInterceptors.add(networkInterceptor);
         }
         return this;
@@ -163,17 +241,33 @@ public class LargeImage {
 
     /**
      * 可以指定自己定义的HTTPDNS
+     *
      * @param dns 自定义DNS
      * @return
      */
-    public LargeImage setDns(Dns dns){
+    public LargeImage setDns(Dns dns) {
         this.mDns = dns;
         return this;
     }
 
+    /**
+     * 设置启动多少次，开始清除mmkv中的大图信息
+     * 项目越大，该值可以适当调大
+     */
+    public LargeImage setMaxRemoveValue(int value) {
+        //不建议少于20次
+        if(value <= 20){
+            value = 20;
+        }
+        //这里不设置this.maxRemoveValue的值是因为不想影响当前
+        //的值，因为是否进行清理是在子线程中执行，只存放mmkv
+        //那么只影响下次启动
+        mmkv.encode("maxRemoveValue",value);
+        return this;
+    }
 
 
-    public Dns getDns(){
+    public Dns getDns() {
         return mDns;
     }
 
@@ -197,4 +291,7 @@ public class LargeImage {
         return largeImageOpen;
     }
 
+    public int getMaxRemoveValue() {
+        return maxRemoveValue;
+    }
 }

@@ -1,6 +1,5 @@
 package org.zzy.lib.largeimage;
 
-import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -53,6 +52,25 @@ public class LargeImageInfo implements Parcelable {
      */
     private int targetHeight;
 
+    /**
+     * 标识该记录未使用次数
+     * 该值只要使用一次，就为0.如果一直不使用就会持续增加，
+     * 增加到最大清理值还未使用，就说明该信息很可能已经不用了
+     * 那么就删除掉。
+     * 该值因为在多线程中运行，为了效率并没有处理线程安全问题，
+     * 所以不要拿这个值当做依据，该值只用于评判那些很久未使用的数据
+     * 对于使用过的数据，不要在意他的值是否准确，只要使用过肯定会被设置
+     * 为0
+     */
+    private  volatile int unUseCount;
+
+    public int getUnUseCount() {
+        return unUseCount;
+    }
+
+    public void setUnUseCount(int unUseCount) {
+        this.unUseCount = unUseCount;
+    }
 
     public int getTargetWidth() {
         return targetWidth;
@@ -136,6 +154,7 @@ public class LargeImageInfo implements Parcelable {
         dest.writeString(this.framework);
         dest.writeInt(this.targetWidth);
         dest.writeInt(this.targetHeight);
+        dest.writeInt(this.unUseCount);
     }
 
     protected LargeImageInfo(Parcel in) {
@@ -147,6 +166,7 @@ public class LargeImageInfo implements Parcelable {
         this.framework = in.readString();
         this.targetWidth = in.readInt();
         this.targetHeight = in.readInt();
+        this.unUseCount = in.readInt();
     }
 
     public static final Creator<LargeImageInfo> CREATOR = new Creator<LargeImageInfo>() {
