@@ -65,6 +65,11 @@ public class LargeImageManager {
     private Map<String,Bitmap> mBitmapCache = new ConcurrentHashMap<>();
 
     /**
+     * 缓存大图信息，用于列表显示
+     */
+    private Map<String,LargeImageInfo> mInfoCache = new ConcurrentHashMap<>();
+
+    /**
      * 是否开启弹窗
      */
     private boolean openDialog = false;
@@ -140,9 +145,12 @@ public class LargeImageManager {
                     largeImageInfo.setTargetWidth(targetWidth);
                     largeImageInfo.setTargetHeight(targetHeight);
                     mBitmapCache.put(url,bitmap);
+                    mInfoCache.put(url,largeImageInfo);
                     mmkv.encode(url, largeImageInfo);
                 } else {
                     //都不超标，则删除
+                    mBitmapCache.remove(url);
+                    mInfoCache.remove(url);
                     mmkv.remove(url);
                 }
             } else {
@@ -158,6 +166,7 @@ public class LargeImageManager {
                     largeImageInfo.setTargetWidth(targetWidth);
                     largeImageInfo.setTargetHeight(targetHeight);
                     mBitmapCache.put(url,bitmap);
+                    mInfoCache.put(url,largeImageInfo);
                     mmkv.encode(url, largeImageInfo);
                 }
             }
@@ -421,5 +430,9 @@ public class LargeImageManager {
 
     public Map<String, Bitmap> getmBitmapCache() {
         return mBitmapCache;
+    }
+
+    public Map<String, LargeImageInfo> getmInfoCache() {
+        return mInfoCache;
     }
 }

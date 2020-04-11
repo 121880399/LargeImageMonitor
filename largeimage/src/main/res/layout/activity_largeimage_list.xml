@@ -10,7 +10,7 @@
         android:layout_height="?attr/actionBarSize"
         android:background="@android:color/white"
         app:navigationIcon="@drawable/ic_arrow_back_black_24dp"
-        app:title="标题"
+        app:title="大图列表"
         app:titleTextColor="@android:color/black">
     </androidx.appcompat.widget.Toolbar>
     <androidx.recyclerview.widget.RecyclerView
