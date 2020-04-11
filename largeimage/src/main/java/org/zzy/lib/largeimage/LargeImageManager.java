@@ -2,13 +2,11 @@ package org.zzy.lib.largeimage;
 
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
-import android.app.Application;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
@@ -24,12 +22,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.tencent.mmkv.MMKV;
 
 import org.zzy.lib.largeimage.util.ConvertUtils;
-import org.zzy.lib.largeimage.util.ImageUtil;
-import org.zzy.lib.largeimage.util.Reflector;
 import org.zzy.lib.largeimage.util.ResHelper;
 
 import java.text.DecimalFormat;
@@ -422,5 +417,9 @@ public class LargeImageManager {
 
     public boolean isOpenDialog() {
         return openDialog;
+    }
+
+    public Map<String, Bitmap> getmBitmapCache() {
+        return mBitmapCache;
     }
 }

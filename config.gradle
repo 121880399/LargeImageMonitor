@@ -22,7 +22,7 @@ ext {
                     "image-loader"            : 'com.nostra13.universalimageloader:universal-image-loader:1.9.5',
                     "MMKV"                    : 'com.tencent:mmkv-static:1.1.0',
                     "FloatWindow"             : 'com.github.yhaolpz:FloatWindow:1.0.9',
-                    "brvah"                   : 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.50',
-                    "androidx"                 : 'androidx.appcompat:appcompat:1.1.0',
+                    "androidx"                : 'androidx.appcompat:appcompat:1.1.0',
+                    "recylcerview"            : 'androidx.recyclerview:recyclerview:1.0.0',
     ]
 }

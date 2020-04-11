@@ -35,7 +35,9 @@ dependencies {
         exclude module: 'support-v4'
         exclude module: 'support-compat'
     }
-    implementation rootProject.ext.dependencies["brvah"]
     implementation rootProject.ext.dependencies["androidx"]
+    implementation (rootProject.ext.dependencies["recylcerview"]){
+        exclude module: 'support-compat'
+    }
 
 }

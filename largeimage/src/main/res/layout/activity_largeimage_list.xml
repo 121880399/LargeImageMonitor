@@ -13,4 +13,9 @@
         app:title="标题"
         app:titleTextColor="@android:color/black">
     </androidx.appcompat.widget.Toolbar>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_largeImage"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        />
 </LinearLayout>
