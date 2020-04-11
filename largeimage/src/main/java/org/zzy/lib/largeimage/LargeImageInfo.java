@@ -16,41 +16,41 @@ public class LargeImageInfo implements Parcelable {
     /**
      * 图片地址
      */
-    private String url;
+    private volatile String url;
 
     /**
      * 图片文件大小
      */
-    private double fileSize;
+    private volatile double fileSize;
 
     /**
      * 图片所占内存大小
      */
-    private double memorySize;
+    private volatile double memorySize;
 
     /**
      * 图片宽
      */
-    private int width;
+    private volatile int width;
 
     /**
      * 图片高
      */
-    private int height;
+    private volatile int height;
 
     /**
      * 加载图片所使用的框架
      */
-    private String framework;
+    private  volatile String framework;
 
     /**
      * View的宽
      */
-    private int targetWidth;
+    private volatile int targetWidth;
     /**
      * View的高
      */
-    private int targetHeight;
+    private volatile  int targetHeight;
 
     /**
      * 标识该记录未使用次数
