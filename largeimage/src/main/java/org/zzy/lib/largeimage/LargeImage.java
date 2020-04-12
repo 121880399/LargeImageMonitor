@@ -162,14 +162,14 @@ public class LargeImage {
                 for (String key : largeImageMmkv.allKeys()) {
                     LargeImageInfo largeImageInfo = largeImageMmkv.decodeParcelable(key, LargeImageInfo.class);
                     //所有保存的信息未使用次数加一
-                    largeImageInfo.setUnUseCount(largeImageInfo.getUnUseCount() + 1);
+                    largeImageInfo.getUnUseCount().incrementAndGet();
                     largeImageMmkv.encode(key, largeImageInfo);
                 }
                 if (currentRemoveValue >= maxRemoveValue) {
                     for (String key : largeImageMmkv.allKeys()) {
                         LargeImageInfo largeImageInfo = largeImageMmkv.decodeParcelable(key, LargeImageInfo.class);
                         //如果该大图信息未使用次数大于最大删除值，那么说明该信息已经很久不用了，直接删除
-                        if (largeImageInfo.getUnUseCount() >= maxRemoveValue) {
+                        if (largeImageInfo.getUnUseCount().get() >= maxRemoveValue) {
                             largeImageMmkv.remove(key);
                         }
                     }

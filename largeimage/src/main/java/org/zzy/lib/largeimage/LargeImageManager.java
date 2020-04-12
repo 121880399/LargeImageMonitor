@@ -145,7 +145,7 @@ public class LargeImageManager {
                     largeImageInfo.setFramework(framework);
                     largeImageInfo.setTargetWidth(targetWidth);
                     largeImageInfo.setTargetHeight(targetHeight);
-                    largeImageInfo.setUnUseCount(0);
+                    largeImageInfo.getUnUseCount().set(0);
                     mBitmapCache.put(url,bitmap);
                     mInfoCache.put(url,largeImageInfo);
                     mmkv.encode(url, largeImageInfo);
@@ -167,7 +167,7 @@ public class LargeImageManager {
                     largeImageInfo.setFramework(framework);
                     largeImageInfo.setTargetWidth(targetWidth);
                     largeImageInfo.setTargetHeight(targetHeight);
-                    largeImageInfo.setUnUseCount(0);
+                    largeImageInfo.getUnUseCount().set(0);
                     mBitmapCache.put(url,bitmap);
                     mInfoCache.put(url,largeImageInfo);
                     mmkv.encode(url, largeImageInfo);
