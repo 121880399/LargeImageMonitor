@@ -12,6 +12,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.tencent.mmkv.MMKV;
 
@@ -39,6 +40,7 @@ public class LargeImageListActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private LargeImageListAdapter mLargeImageAdapter;
     private List<LargeImageInfo> mLargeImageList;
+    private SwipeRefreshLayout mRefresh;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +52,7 @@ public class LargeImageListActivity extends AppCompatActivity {
     private void initView(){
         mToolBar = findViewById(R.id.toolbar);
         mRecyclerView = findViewById(R.id.rv_largeImage);
+        mRefresh = findViewById(R.id.refresh);
         mToolBar.inflateMenu(R.menu.toolbar);
         mToolBar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,6 +68,20 @@ public class LargeImageListActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
                 return true;
+            }
+        });
+        mRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                Map<String, LargeImageInfo> stringLargeImageInfoMap = LargeImageManager.getInstance().getmInfoCache();
+                if(mLargeImageList != null && mLargeImageList.size() > 0){
+                    mLargeImageList.clear();
+                }
+                for (Map.Entry<String, LargeImageInfo> entry :  stringLargeImageInfoMap.entrySet()) {
+                    mLargeImageList.add(entry.getValue());
+                }
+                mLargeImageAdapter.notifyDataSetChanged();
+                mRefresh.setRefreshing(false);
             }
         });
     }
