@@ -47,7 +47,7 @@ public class LargeImage {
      * 大图监控开关,这里只是存储数据的开关
      * 是否进行字节码修改需要在gradle文件中对插件进行设置
      */
-    private boolean largeImageOpen = true;
+    private volatile boolean largeImageOpen = true;
 
     /**
      * Okhttp应用拦截器

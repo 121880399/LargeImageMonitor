@@ -72,7 +72,7 @@ public class LargeImageManager {
     /**
      * 是否开启弹窗
      */
-    private boolean openDialog = false;
+    private volatile boolean openDialog = false;
 
     private LargeImageManager() {
         mmkv = MMKV.mmkvWithID("LargeImageManager");
@@ -121,6 +121,7 @@ public class LargeImageManager {
      * 此方法提供给四大图片框架拦截使用，此时的图片已经变成了bitmap，除非人工逆向计算，否则得不到
      * 文件的大小，如果是从网络加载，会在前面一个方法得到文件大小，加载到内存中以后，会通过这个方法
      * 补全信息。如果是加载本地的图片，就没办法得到文件大小，后期看看能不能通过逆向人工计算得到。
+     * 该方法在子线程中执行
      * 作者: ZhouZhengyi
      * 创建时间: 2020/4/4 8:32
      */
