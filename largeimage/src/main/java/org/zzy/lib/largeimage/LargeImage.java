@@ -108,7 +108,7 @@ public class LargeImage {
         MMKV.initialize(app);
         isRemoveMmkv();
         ImageView ivIcon = new ImageView(app);
-        ivIcon.setImageResource(R.drawable.ic_satellite);
+        ivIcon.setImageResource(R.drawable.ic_logo);
         FloatWindow.with(app)
                 .setView(ivIcon)
                 .setWidth(Screen.width, 0.2f) //设置悬浮控件宽高
