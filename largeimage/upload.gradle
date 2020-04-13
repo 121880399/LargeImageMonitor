@@ -1,0 +1,15 @@
+apply plugin: 'com.novoda.bintray-release'
+publish {
+
+    def groupProjectID = 'org.zzy.largeimage'
+    def artifactProjectID = 'large-image-monitor'
+    def publishVersionID = "${rootProject.ext.android["jcenterArchivesVersionName"]}"
+
+    userOrg = 'zzy'
+    repoName = "imageMonitor"
+    groupId = groupProjectID
+    artifactId = artifactProjectID
+    publishVersion = publishVersionID
+    desc = 'Oh hi, this is a library which can be monitor large image.'
+    website = 'https://github.com/121880399/LargeImageMonitor'
+}

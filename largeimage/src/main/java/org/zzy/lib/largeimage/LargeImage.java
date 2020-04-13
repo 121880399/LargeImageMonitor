@@ -26,7 +26,8 @@ import okhttp3.Interceptor;
  * 作    者：ZhouZhengyi
  * 创建日期：2020/4/4 20:58
  * 描    述：门面类，主要用于初始化和配置各项参数
- * 修订历史：
+ * 修订历史：2020/4/13 v1.0.0
+ * github:https://github.com/121880399/LargeImageMonitor
  * ================================================
  */
 public class LargeImage {

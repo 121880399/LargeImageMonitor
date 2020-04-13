@@ -17,7 +17,8 @@ import java.util.List;
  * 作    者：ZhouZhengyi
  * 创建日期：2020/3/31 20:49
  * 描    述：调试前执行gradle assembleDebug -Dorg.gradle.daemon=false -Dorg.gradle.debug=true命令，然后按debug按钮，接着执行task debug便会生效
- * 修订历史：
+ * 修订历史：2020/4/13 v1.0.0
+ * github:https://github.com/121880399/LargeImageMonitor
  * ================================================
  */
 public class LargeImageMonitorPlugin implements Plugin<Project> {
