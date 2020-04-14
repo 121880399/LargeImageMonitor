@@ -1,4 +1,4 @@
 rootProject.name='ImageMonitor'
 include ':app'
 include ':largeimage'
-include ':buildsrc'
+include ':largeimage-plugin'

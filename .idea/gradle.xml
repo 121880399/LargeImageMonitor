@@ -12,8 +12,8 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
-            <option value="$PROJECT_DIR$/buildSrc" />
             <option value="$PROJECT_DIR$/largeimage" />
+            <option value="$PROJECT_DIR$/largeimage-plugin" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

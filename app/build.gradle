@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-apply plugin: 'largeimage-monitor'
+//apply plugin: 'largeimage-monitor'
 android {
     compileSdkVersion rootProject.ext.android["compileSdkVersion"]
 
@@ -18,10 +18,10 @@ android {
         }
     }
 }
-largeImageMonitor{
-    //开关测试成功
-    largeImagePluginSwitch = true
-}
+//largeImageMonitor{
+//    //开关测试成功
+//    largeImagePluginSwitch = true
+//}
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])

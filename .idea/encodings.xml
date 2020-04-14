@@ -2,17 +2,35 @@
 <project version="4">
   <component name="Encoding" native2AsciiForPropertiesFiles="true" defaultCharsetForPropertiesFiles="UTF-8">
     <file url="file://$PROJECT_DIR$" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/buildSrc/src" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/buildSrc/src/main/groovy/org/zzy/largeimage/adapter/LargeImageClassAdapter.java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/buildSrc/src/main/groovy/org/zzy/largeimage/adapter/OkHttpClassAdapter.java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/buildSrc/src/main/groovy/org/zzy/largeimage/method/OkHttpMethodAdapter.java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/buildSrc/src/main/groovy/org/zzy/largeimage/transform/OkHttpTransform.java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/buildSrc/src/main/groovy/org/zzy/largeimage/weaver/OkHttpWeaver.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/largeimage-plugin/src" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/largeimage-plugin/src/main/groovy/org/zzy/largeimage/Config.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/largeimage-plugin/src/main/groovy/org/zzy/largeimage/LargeImageMonitorPlugin.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/largeimage-plugin/src/main/groovy/org/zzy/largeimage/adapter/LargeImageClassAdapter.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/largeimage-plugin/src/main/groovy/org/zzy/largeimage/adapter/OkHttpClassAdapter.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/largeimage-plugin/src/main/groovy/org/zzy/largeimage/adapter/UrlConnectionClassAdapter.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/largeimage-plugin/src/main/groovy/org/zzy/largeimage/method/FrescoMethodAdapter.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/largeimage-plugin/src/main/groovy/org/zzy/largeimage/method/GlideMethodAdapter.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/largeimage-plugin/src/main/groovy/org/zzy/largeimage/method/ImageLoaderMethodAdapter.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/largeimage-plugin/src/main/groovy/org/zzy/largeimage/method/OkHttpMethodAdapter.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/largeimage-plugin/src/main/groovy/org/zzy/largeimage/method/PicassoMethodAdapter.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/largeimage-plugin/src/main/groovy/org/zzy/largeimage/transform/OkHttpTransform.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/largeimage-plugin/src/main/groovy/org/zzy/largeimage/weaver/OkHttpWeaver.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/largeimage/src/main/java/org/zzy/lib/largeimage/LargeImage.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/largeimage/src/main/java/org/zzy/lib/largeimage/LargeImageInfo.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/largeimage/src/main/java/org/zzy/lib/largeimage/LargeImageManager.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/largeimage/src/main/java/org/zzy/lib/largeimage/activity/LargeImageListActivity.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/largeimage/src/main/java/org/zzy/lib/largeimage/activity/SettingActivity.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/largeimage/src/main/java/org/zzy/lib/largeimage/adapter/LargeImageListAdapter.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/largeimage/src/main/java/org/zzy/lib/largeimage/aop/fresco/FrescoHook.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/largeimage/src/main/java/org/zzy/lib/largeimage/aop/fresco/FrescoLargeImageProcessor.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/largeimage/src/main/java/org/zzy/lib/largeimage/aop/glide/GlideHook.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/largeimage/src/main/java/org/zzy/lib/largeimage/aop/glide/GlideLargeImageListener.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/largeimage/src/main/java/org/zzy/lib/largeimage/aop/imageloader/ImageLoaderHook.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/largeimage/src/main/java/org/zzy/lib/largeimage/aop/imageloader/ImageLoaderLargeImageListener.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/largeimage/src/main/java/org/zzy/lib/largeimage/aop/okhttp/LargeImageInterceptor.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/largeimage/src/main/java/org/zzy/lib/largeimage/aop/picasso/PicassoHook.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/largeimage/src/main/java/org/zzy/lib/largeimage/aop/picasso/PicassoLargeImageTransformation.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/largeimage/src/main/java/org/zzy/lib/largeimage/aop/urlconnection/UrlConnectionHook.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/largeimage/src/main/java/org/zzy/lib/largeimage/util/ConvertUtils.java" charset="UTF-8" />
     <file url="PROJECT" charset="UTF-8" />
   </component>
