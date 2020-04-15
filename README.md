@@ -27,6 +27,11 @@ LargeImageMonitor是一个使用ASM进行字节码插桩的大图监控框架，
 &nbsp;&nbsp;&nbsp;&nbsp;5.支持Androidx。
 
 ### 效果
-<center class="half">
-    <img src="wiki/example1.jpg" width="360"/><img src="wiki/example2.jpg" width="360"/>
-</center>
+<p float="left">
+  <img src="wiki/example1.jpg" width="360" height="780"/>
+  <img src="wiki/example2.jpg" width="360" height="780"/>
+</p>
+<p float="left">
+  <img src="wiki/example3.jpg" width="360" height="780"/>
+  <img src="wiki/example4.jpg" width="360" height="780"/>
+</p>
