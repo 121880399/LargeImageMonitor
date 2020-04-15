@@ -15,3 +15,14 @@
 ### 介绍
 LargeImageMonitor是一个使用ASM进行字节码插桩的大图监控框架，可以对我们要加载的图片进行监控，如果出现图片超过阈值的情况会进行报警。
 
+### 功能与特点
+&nbsp;&nbsp;&nbsp;&nbsp;1.支持Glide,Fresco,Picasso,Universal Image Loader。
+
+&nbsp;&nbsp;&nbsp;&nbsp;2.可以对图片的文件大小设置阈值。
+
+&nbsp;&nbsp;&nbsp;&nbsp;3.可以对图片所占用的内存大小设置阈值。
+
+&nbsp;&nbsp;&nbsp;&nbsp;4.可以通过弹窗或者列表的方式查看超过阈值的图片。
+
+&nbsp;&nbsp;&nbsp;&nbsp;5.支持Androidx。
+
