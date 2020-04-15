@@ -1,9 +1,9 @@
 apply plugin: 'com.novoda.bintray-release'
 //gradlew clean build bintrayUpload -PbintrayUser=BINTRAY_USERNAME -PbintrayKey=BINTRAY_KEY -PdryRun=false
 publish {
-    def groupProjectID = 'org.zzy.lib.largeimage'
+    def groupProjectID = 'org.zzy.largeimage'
     def artifactProjectID = 'large-image-monitor-plugin'
-    def publishVersionID = "${rootProject.ext.android["jcenterArchivesVersionName"]}"
+    def publishVersionID = "${rootProject.ext.android["pluginVersionName"]}"
 
     userOrg = 'zzy'
     repoName = "imageMonitor"

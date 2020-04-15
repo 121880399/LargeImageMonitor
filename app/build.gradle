@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-//apply plugin: 'largeimage-monitor'
+apply plugin: 'largeimage-monitor'
 android {
     compileSdkVersion rootProject.ext.android["compileSdkVersion"]
 
@@ -26,9 +26,9 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation rootProject.ext.dependencies["androidx"]
-    implementation project(path: ':largeimage')
     implementation rootProject.ext.dependencies["glide"]
     implementation rootProject.ext.dependencies["picasso"]
     implementation rootProject.ext.dependencies["fresco"]
     implementation rootProject.ext.dependencies["image-loader"]
+    implementation rootProject.ext.dependencies["image-monitor"]
 }

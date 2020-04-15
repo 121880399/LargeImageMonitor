@@ -2,13 +2,13 @@
 apply from: "config.gradle"
 buildscript {
     repositories {
-
+        jcenter()
+        google()
         maven { url "http://maven.aliyun.com/nexus/content/groups/public/" }
         maven { url "http://maven.aliyun.com/nexus/content/repositories/jcente" }
         maven { url 'https://jitpack.io' }
-        jcenter()
-        google()
 
+//https://jcenter.bintray.com/org/zzy/largeimage/large-image-monitor-plugin/1.0.0/
 //        maven {
 //            credentials {
 //                username "${mavenUser}"
@@ -20,6 +20,7 @@ buildscript {
         classpath 'com.android.tools.build:gradle:3.6.1'
 //        classpath 'org.zzy.lib:largeimage:1.0.0-SNAPSHOT'
         classpath 'com.novoda:bintray-release:0.9.2'
+        classpath 'org.zzy.largeimage:large-image-monitor-plugin:1.0.0'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -28,12 +29,13 @@ buildscript {
 allprojects {
     tasks.withType(Javadoc).all { enabled = false }
     repositories {
-
+        jcenter()
+        google()
         maven { url "http://maven.aliyun.com/nexus/content/groups/public/" }
         maven { url "http://maven.aliyun.com/nexus/content/repositories/jcente" }
         maven { url 'https://jitpack.io' }
-        jcenter()
-        google()
+
+
 
 //        maven {
 //            credentials {
