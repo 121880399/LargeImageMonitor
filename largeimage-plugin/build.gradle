@@ -1,21 +1,21 @@
 apply plugin: 'groovy'
-apply plugin: 'maven'
+//apply plugin: 'maven'
 apply from: 'upload.gradle'
 
 //上传到本地maven库
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            pom.groupId = "org.zzy.lib"
-            pom.artifactId = "largeimage"
-            pom.version = "1.0.0-SNAPSHOT"
-            //要上传的maven仓库地址
-            repository(url:"http://127.0.0.1:8081/repository/maven-snapshots/") {
-                authentication(userName: "admin", password: "admin123")
-            }
-        }
-    }
-}
+//uploadArchives {
+//    repositories {
+//        mavenDeployer {
+//            pom.groupId = "org.zzy.lib"
+//            pom.artifactId = "largeimage"
+//            pom.version = "1.0.0-SNAPSHOT"
+//            //要上传的maven仓库地址
+//            repository(url:"http://127.0.0.1:8081/repository/maven-snapshots/") {
+//                authentication(userName: "admin", password: "admin123")
+//            }
+//        }
+//    }
+//}
 dependencies {
     implementation gradleApi()
     implementation localGroovy()

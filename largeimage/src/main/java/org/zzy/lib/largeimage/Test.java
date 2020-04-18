@@ -3,8 +3,10 @@ package org.zzy.lib.largeimage;
 
 import android.net.Uri;
 
+import com.bumptech.glide.request.RequestListener;
 import com.squareup.picasso.Transformation;
 
+import org.zzy.lib.largeimage.aop.glide.GlideHook;
 import org.zzy.lib.largeimage.aop.picasso.PicassoHook;
 
 import java.util.List;
@@ -18,10 +20,10 @@ import java.util.List;
  * ================================================
  */
 public class Test {
-//    private List<RequestListener> requestListeners;
+    private List<RequestListener> requestListeners;
     //模拟glide
 //    private void init(){
-//        requestListeners=GlideHook.process(requestListeners);
+//        GlideHook.process(requestListeners);
 //    }
 
     //模拟picasso

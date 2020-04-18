@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.animation.BounceInterpolator;
 import android.widget.ImageView;
 
+import androidx.core.util.Preconditions;
+
 import com.tencent.mmkv.MMKV;
 import com.yhao.floatwindow.FloatWindow;
 import com.yhao.floatwindow.MoveType;
@@ -97,6 +99,9 @@ public class LargeImage {
     }
 
     public LargeImage install(Application app) {
+        if(null == app){
+            throw new NullPointerException("You must set a applicatiion!");
+        }
         if (isCalled) {
             Log.e(TAG, "Don't call this method repeatedly!");
             return this;
