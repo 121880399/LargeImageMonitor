@@ -20,7 +20,7 @@ import java.util.List;
  * ================================================
  */
 public class Test {
-    private List<RequestListener> requestListeners;
+//    private List<RequestListener> requestListeners;
     //模拟glide
 //    private void init(){
 //        GlideHook.process(requestListeners);
