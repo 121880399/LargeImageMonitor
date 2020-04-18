@@ -1,21 +1,21 @@
 apply plugin: 'groovy'
-//apply plugin: 'maven'
+apply plugin: 'maven'
 apply from: 'upload.gradle'
 
 //上传到本地maven库
-//uploadArchives {
-//    repositories {
-//        mavenDeployer {
-//            pom.groupId = "org.zzy.lib"
-//            pom.artifactId = "largeimage"
-//            pom.version = "1.0.0-SNAPSHOT"
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            pom.groupId = "org.zzy.lib"
+            pom.artifactId = "largeimage"
+            pom.version = "1.0.0-SNAPSHOT"
             //要上传的maven仓库地址
-//            repository(url:"http://127.0.0.1:8081/repository/maven-snapshots/") {
-//                authentication(userName: "admin", password: "admin123")
-//            }
-//        }
-//    }
-//}
+            repository(url:"http://127.0.0.1:8081/repository/maven-snapshots/") {
+                authentication(userName: "admin", password: "admin123")
+            }
+        }
+    }
+}
 dependencies {
     implementation gradleApi()
     implementation localGroovy()
@@ -24,7 +24,7 @@ dependencies {
     implementation('com.quinn.hunter:hunter-transform:0.9.2') { //使用hunter框架
         exclude group: 'com.android.tools.build' //排除hunter带来的gradle，使用自定义gradle版本
     }
-    //这里不引入asm的相关包是因为hunter中已经引入，如果想使用新版本则可以引入
+    //这里不引入asm的相关包是因为hunter中已经引入，如果想使用新版本则可以引入，但是要排除掉hunter使用的版本
 }
 
 repositories {

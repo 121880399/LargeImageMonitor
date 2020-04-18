@@ -36,7 +36,7 @@ public class FrescoMethodAdapter extends AdviceAdapter {
      * 2.调用getPostprocessor()
      * 3.设置进FrescoHook的process方法
      * 4.将返回的Postprocessor再设置进ImageRequestBuilder
-    * builder.setPostprocessor(FrescoHook.process(builder.getSourceUri()，builder.getPostprocessor));
+    * builder.setPostprocessor(FrescoHook.process(builder.getSourceUri()，builder.getPostprocessor(),getResizeOptions()));
     * 作者: ZhouZhengyi
     * 创建时间: 2020/4/2 23:53
     */

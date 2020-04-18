@@ -44,9 +44,7 @@ public class GlideMethodAdapter extends AdviceAdapter {
     protected void onMethodExit(int opcode) {
         super.onMethodExit(opcode);
         mv.visitVarInsn(ALOAD, 0);
-        mv.visitVarInsn(ALOAD, 0);
         mv.visitFieldInsn(GETFIELD, "com/bumptech/glide/request/SingleRequest", "requestListeners", "Ljava/util/List;");
         mv.visitMethodInsn(INVOKESTATIC, "org/zzy/lib/largeimage/aop/glide/GlideHook", "process", "(Ljava/util/List;)Ljava/util/List;", false);
-        mv.visitFieldInsn(PUTFIELD, "com/bumptech/glide/request/SingleRequest", "requestListeners", "Ljava/util/List;");
     }
 }
