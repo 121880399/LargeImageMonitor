@@ -91,6 +91,9 @@ implementation 'org.zzy.lib.largeimage:large-image-monitor:1.0.0'
 v1.0.0 (2020/4/15)
 - 项目初始化实现基本功能
 
+### 原理分析
+- [通过ASM实现大图监控](https://github.com/121880399/LargeImageMonitor/blob/master/wiki/LargeImageTheory.md)
+
 ### 鸣谢
   - [DoraemonKit](https://github.com/didi/DoraemonKit)
   - [Hunter](https://github.com/Leaking/Hunter)
