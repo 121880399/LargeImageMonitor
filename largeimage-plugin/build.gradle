@@ -19,8 +19,8 @@ apply from: 'upload.gradle'
 dependencies {
     implementation gradleApi()
     implementation localGroovy()
-    implementation 'com.android.tools.build:gradle:3.0.1'//版本不能太高，防止跟项目的起冲突
-    implementation 'com.android.tools.build:gradle-api:3.0.0'
+    implementation 'com.android.tools.build:gradle:3.5.0'//版本不能太高，防止跟项目的起冲突
+    implementation 'com.android.tools.build:gradle-api:3.5.0'
     implementation('com.quinn.hunter:hunter-transform:0.9.2') { //使用hunter框架
         exclude group: 'com.android.tools.build' //排除hunter带来的gradle，使用自定义gradle版本
     }

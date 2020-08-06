@@ -35,8 +35,7 @@ public class GlideMethodAdapter extends AdviceAdapter {
     * 方法退出时
      * 1.先拿到requestListeners
      * 2.然后对其进行修改
-     * 3.将修改后的requestListeners设置回去
-     * requestListeners=GlideHook.process(requestListeners);
+     * GlideHook.process(requestListeners);
     * 作者: ZhouZhengyi
     * 创建时间: 2020/4/1 15:51
     */

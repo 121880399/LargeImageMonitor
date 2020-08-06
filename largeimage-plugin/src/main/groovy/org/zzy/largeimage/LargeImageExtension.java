@@ -1,5 +1,8 @@
 package org.zzy.largeimage;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * ================================================
  * 作    者：ZhouZhengyi
@@ -14,4 +17,31 @@ public class LargeImageExtension {
      * 大图检测插件的开关
      */
     public boolean largeImagePluginSwitch = true;
+
+    /**
+     * 是否开启自动压缩图片，如果没有开启
+     * convertTowebp与openMultiThread属性无效
+     */
+    public boolean openAutoCompress = false;
+
+    /**
+     * 是否转换为webp格式
+     */
+    public boolean convertToWebp = false;
+
+    /**
+     * 是否开启多线程压缩
+     */
+    public boolean openMultiThread = true;
+
+    /**
+     * 白名单上面的图片不进行自动压缩
+     */
+    public List<String> whiteList = new ArrayList<>();
+
+    /**
+     * 开启自动压缩图片后 文件大小阈值 kb为单位
+     */
+    public double fileSizeThreshold = 500.0;
+
 }

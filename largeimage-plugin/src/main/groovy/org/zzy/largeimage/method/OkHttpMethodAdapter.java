@@ -35,6 +35,7 @@ public class OkHttpMethodAdapter extends AdviceAdapter {
      * 这里不知道为什么在onMethodEnter方法插入会报空指针
      * interceptors.addAll(LargeImage.getInstance().getOkHttpInterceptors());
      * networkInterceptors.addAll(LargeImage.getInstance().getOkHttpNetworkInterceptors());
+     * dns = LargeImage.getInstance().getDns();
      * 作者: ZhouZhengyi
      * 创建时间: 2020/4/5 9:39
      */
